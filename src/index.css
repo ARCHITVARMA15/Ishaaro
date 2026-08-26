@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@theme {
+  --font-heading: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-gujarati: "Noto Sans Gujarati", ui-sans-serif, system-ui, sans-serif;
+
+  /* Primary: deep teal, base at 700 (#1B4B43) */
+  --color-primary-50: #eff6f4;
+  --color-primary-100: #dceae6;
+  --color-primary-200: #b3d2c9;
+  --color-primary-300: #89b9ac;
+  --color-primary-400: #5f9f8e;
+  --color-primary-500: #3d8271;
+  --color-primary-600: #28685a;
+  --color-primary-700: #1b4b43;
+  --color-primary-800: #153a34;
+  --color-primary-900: #102b26;
+  --color-primary-950: #081613;
+
+  /* Accent: warm coral, base at 500 (#FF8C5A) */
+  --color-accent-50: #fff4ee;
+  --color-accent-100: #ffe5d6;
+  --color-accent-200: #ffc9ad;
+  --color-accent-300: #ffad84;
+  --color-accent-400: #ff9e6e;
+  --color-accent-500: #ff8c5a;
+  --color-accent-600: #f26e3a;
+  --color-accent-700: #d6552a;
+  --color-accent-800: #ac4322;
+  --color-accent-900: #7e321a;
+  --color-accent-950: #4a1d0f;
+
+  --color-background: #fdfbf7;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background-color: var(--color-background);
+  color: var(--color-primary-950);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+}
