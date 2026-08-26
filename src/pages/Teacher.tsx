@@ -40,7 +40,7 @@ function StatCardView({
         <span className="font-heading text-6xl font-medium text-primary-900">{value}</span>
         <span className="font-heading text-2xl font-medium text-primary-900">%</span>
       </div>
-      <div className="mt-3 font-mono text-xs text-accent-600">{delta}</div>
+      <div className="mt-3 font-mono text-xs text-accent-800">{delta}</div>
       <svg
         className="mt-4 h-12 w-28 text-accent-500 opacity-70"
         viewBox="0 0 100 50"
@@ -54,7 +54,7 @@ function StatCardView({
 
 function ScoreCell({ score }: { score: number }) {
   return (
-    <span className={score < 75 ? 'text-red-600' : 'text-accent-600'}>{score}%</span>
+    <span className={score < 75 ? 'text-red-600' : 'text-accent-800'}>{score}%</span>
   )
 }
 
@@ -129,7 +129,7 @@ export default function Teacher() {
         </header>
 
         {/* Stats row */}
-        <div className="mb-12 grid grid-cols-1 gap-8 md:mb-16 md:grid-cols-3">
+        <div className="mb-12 grid grid-cols-1 gap-8 sm:grid-cols-3 md:mb-16 md:grid-cols-1 lg:grid-cols-3">
           {STAT_CARDS.map((stat) => (
             <StatCardView key={stat.label} {...stat} />
           ))}
@@ -198,7 +198,7 @@ export default function Teacher() {
                       <td className="p-4 sm:p-6">
                         <div className="flex items-center gap-4">
                           <span
-                            className="flex h-10 w-10 shrink-0 items-center justify-center border-2 border-accent-500 font-heading text-sm text-accent-700"
+                            className="flex h-10 w-10 shrink-0 items-center justify-center border-2 border-accent-500 font-heading text-sm text-accent-800"
                             style={{ borderRadius: '50% 40% 60% 40% / 40% 50% 40% 60%' }}
                           >
                             {student.initials}
@@ -207,7 +207,7 @@ export default function Teacher() {
                             <div className="font-body text-sm font-semibold text-primary-900">
                               {student.name}
                             </div>
-                            <div className="font-mono text-xs text-primary-900/50">
+                            <div className="font-mono text-xs text-primary-900/70">
                               {student.focus}
                             </div>
                           </div>
@@ -224,7 +224,7 @@ export default function Teacher() {
             <div className="border-t border-primary-900 bg-white p-6 text-center">
               <button
                 type="button"
-                className="font-mono text-xs uppercase tracking-widest text-primary-700 transition-colors hover:text-accent-600"
+                className="font-mono text-xs uppercase tracking-widest text-primary-700 transition-colors hover:text-accent-800"
               >
                 View Full Roster &rarr;
               </button>

@@ -65,7 +65,7 @@ function ProgressRing({ percent }: { percent: number }) {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="font-heading text-2xl font-semibold text-primary-900">{percent}%</span>
-        <span className="font-mono text-[10px] uppercase tracking-widest text-primary-900/50">
+        <span className="font-mono text-[10px] uppercase tracking-widest text-primary-900/70">
           Weekly goal
         </span>
       </div>
@@ -103,7 +103,7 @@ export default function Parent() {
           </p>
 
           <h1 className="mb-10 font-heading text-4xl font-medium leading-tight text-primary-900 sm:text-5xl">
-            Arjun practiced <span className="text-accent-600">4 signs</span> this week!
+            Arjun practiced <span className="text-accent-700">4 signs</span> this week!
           </h1>
 
           <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
@@ -133,7 +133,7 @@ export default function Parent() {
                           </svg>
                         )}
                       </div>
-                      <span className="font-mono text-[10px] uppercase text-primary-900/50">
+                      <span className="font-mono text-[10px] uppercase text-primary-900/70">
                         {d.day}
                       </span>
                     </div>
@@ -159,11 +159,11 @@ export default function Parent() {
                         clipPath: 'polygon(0 0, 100% 0, 96% 100%, 4% 100%)',
                       }}
                     >
-                      <StarIcon className="h-3.5 w-3.5 text-accent-500" />
+                      <StarIcon className="h-3.5 w-3.5 text-accent-700" />
                       {sign}
                     </div>
                   ))}
-                  <div className="flex items-center border border-dashed border-primary-900/40 px-4 py-2 font-mono text-xs text-primary-900/40">
+                  <div className="flex items-center border border-dashed border-primary-900/40 px-4 py-2 font-mono text-xs text-primary-900/70">
                     +2 more
                   </div>
                 </div>

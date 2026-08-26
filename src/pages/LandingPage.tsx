@@ -35,7 +35,7 @@ export default function LandingPage() {
                     </svg>
                   </span>
                   <span
-                    className="inline-block -rotate-3 pr-2 font-script text-[0.5em] italic leading-none text-accent-600"
+                    className="inline-block -rotate-3 pr-2 font-script text-[0.5em] italic leading-none text-accent-700"
                     style={{ fontStyle: 'italic' }}
                   >
                     possibilities.
@@ -173,7 +173,7 @@ export default function LandingPage() {
                   </p>
                   <a
                     href="#"
-                    className="mt-6 inline-flex items-center gap-2 border-b border-accent-600 pb-1 font-mono text-xs text-primary-900 transition-colors hover:text-accent-600"
+                    className="mt-6 inline-flex items-center gap-2 border-b border-accent-600 pb-1 font-mono text-xs text-primary-900 transition-colors hover:text-accent-800"
                   >
                     Explore Syllabus
                     <ArrowIcon className="h-3.5 w-3.5" />
@@ -194,7 +194,7 @@ export default function LandingPage() {
                   </p>
                   <a
                     href="#"
-                    className="mt-6 inline-flex items-center gap-2 border-b border-accent-600 pb-1 font-mono text-xs text-primary-900 transition-colors hover:text-accent-600"
+                    className="mt-6 inline-flex items-center gap-2 border-b border-accent-600 pb-1 font-mono text-xs text-primary-900 transition-colors hover:text-accent-800"
                   >
                     Search Archive
                     <SearchIcon className="h-3.5 w-3.5" />

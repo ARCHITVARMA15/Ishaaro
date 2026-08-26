@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import HandPoseLoader from '../components/HandPoseLoader'
 import StitchHeader from '../components/StitchHeader'
 import {
   ArchiveIcon,
@@ -50,7 +51,7 @@ function StatusPill({ status }: { status: SignStatus }) {
         isMatch
           ? 'border-accent-500 bg-accent-500 text-white shadow-[4px_4px_0px_#1b4b43]'
           : isMismatch
-            ? 'border-accent-600 bg-background/95 text-accent-700'
+            ? 'border-accent-600 bg-background/95 text-accent-800'
             : 'border-primary-700 bg-background/90 text-primary-700',
       ].join(' ')}
     >
@@ -138,7 +139,7 @@ export default function PracticeScreen() {
                 {target.gujarati}
               </span>
               <div className="text-right">
-                <span className="block font-mono text-xs text-primary-900/50">
+                <span className="block font-mono text-xs text-primary-900/70">
                   Numeral
                 </span>
                 <span className="font-heading text-xl font-semibold text-primary-900">
@@ -147,23 +148,23 @@ export default function PracticeScreen() {
               </div>
             </div>
 
-            <div className="mt-6 flex items-center justify-between border-t border-primary-100 pt-4">
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-t border-primary-100 pt-4">
               <button
                 type="button"
                 onClick={goPrev}
-                className="font-mono text-xs uppercase tracking-wide text-primary-700 transition-colors hover:text-accent-600"
+                className="whitespace-nowrap font-mono text-xs uppercase tracking-wide text-primary-700 transition-colors hover:text-accent-800"
               >
                 &larr; Prev
               </button>
-              <span className="font-mono text-xs text-primary-900/40">
+              <span className="whitespace-nowrap font-mono text-xs text-primary-900/70">
                 {targetIndex + 1} / {NUMERAL_TARGETS.length}
               </span>
               <button
                 type="button"
                 onClick={goNext}
-                className="font-mono text-xs uppercase tracking-wide text-primary-700 transition-colors hover:text-accent-600"
+                className="whitespace-nowrap font-mono text-xs uppercase tracking-wide text-primary-700 transition-colors hover:text-accent-800"
               >
-                Next / Skip &rarr;
+                Skip &rarr;
               </button>
             </div>
           </div>
@@ -212,8 +213,17 @@ export default function PracticeScreen() {
           )}
 
           {showOverlay && !isDenied && (
-            <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-3 bg-primary-900 text-white">
-              <span className="h-8 w-8 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+            <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-4 bg-primary-900 text-white">
+              <HandPoseLoader
+                size={72}
+                lineColor="#ffffff"
+                dotColor="#ff8c5a"
+                label={
+                  modelStatus === 'loading'
+                    ? 'Loading hand tracking model'
+                    : 'Requesting camera access'
+                }
+              />
               <p className="font-mono text-xs uppercase tracking-widest text-white/80">
                 {modelStatus === 'loading'
                   ? 'Loading hand tracking model...'
@@ -291,7 +301,7 @@ export default function PracticeScreen() {
       <nav className="fixed bottom-0 left-0 z-50 flex w-full justify-around border-t border-primary-100 bg-background py-3 md:hidden">
         <a
           href="#"
-          className="flex flex-col items-center gap-1 text-primary-900/50 hover:text-primary-700"
+          className="flex flex-col items-center gap-1 text-primary-900/70 hover:text-primary-700"
         >
           <SchoolIcon className="h-5 w-5" />
           <span className="font-mono text-[10px]">Curriculum</span>
@@ -302,7 +312,7 @@ export default function PracticeScreen() {
         </span>
         <a
           href="#"
-          className="flex flex-col items-center gap-1 text-primary-900/50 hover:text-primary-700"
+          className="flex flex-col items-center gap-1 text-primary-900/70 hover:text-primary-700"
         >
           <ArchiveIcon className="h-5 w-5" />
           <span className="font-mono text-[10px]">Archive</span>

@@ -47,8 +47,8 @@ function Flashcard({ card, position }: { card: LessonCard; position: number }) {
       )}
 
       <div className="relative flex items-start justify-between">
-        <span className="font-mono text-xs text-primary-900/40">{card.index}</span>
-        {card.completed && <CheckIcon className="h-5 w-5 text-accent-500" />}
+        <span className="font-mono text-xs text-primary-900/70">{card.index}</span>
+        {card.completed && <CheckIcon className="h-5 w-5 text-accent-700" />}
       </div>
 
       <div className="relative flex flex-1 items-center justify-center px-2 text-center">
@@ -67,7 +67,7 @@ function Flashcard({ card, position }: { card: LessonCard; position: number }) {
         {card.glyph ? (
           <span className="font-heading text-base text-primary-900">{card.label}</span>
         ) : (
-          <span className="font-mono text-xs leading-snug text-primary-900/50">
+          <span className="font-mono text-xs leading-snug text-primary-900/70">
             {card.sublabel}
           </span>
         )}
@@ -118,7 +118,7 @@ export default function Lessons() {
                 '-mb-px px-8 py-3 font-mono text-sm font-bold uppercase tracking-wide transition-colors',
                 i === activeTab
                   ? 'bg-primary-700 text-white'
-                  : 'border border-b-0 border-primary-100 bg-white text-primary-900/50 hover:bg-primary-100/60',
+                  : 'border border-b-0 border-primary-100 bg-white text-primary-900/70 hover:bg-primary-100/60',
               ].join(' ')}
             >
               {t.label}

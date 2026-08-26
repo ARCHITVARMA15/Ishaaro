@@ -33,21 +33,21 @@ const CHAT_MESSAGES = [
 export default function Connect() {
   return (
     <div className="flex min-h-screen flex-col bg-background font-body text-primary-900 antialiased md:h-screen md:overflow-hidden">
-      <nav className="sticky top-0 z-50 flex items-center justify-between border-b border-primary-100 bg-primary-900 px-5 py-4 text-white md:px-16">
+      <nav className="sticky top-0 z-50 flex items-center justify-between gap-3 border-b border-primary-100 bg-primary-900 px-5 py-4 text-white md:gap-4 md:px-8 lg:px-16">
         <Link
           to="/connect"
-          className="font-heading text-lg font-bold uppercase tracking-tight text-white"
+          className="shrink-0 font-heading text-lg font-bold uppercase tracking-tight text-white"
         >
           Ishaaro
         </Link>
 
-        <div className="hidden items-center gap-8 md:flex">
+        <div className="hidden items-center gap-5 md:flex lg:gap-8">
           {NAV_LINKS.map((label) => (
             <a
               key={label}
               href="#"
               className={[
-                'font-mono text-sm tracking-wide transition-colors',
+                'whitespace-nowrap font-mono text-sm tracking-wide transition-colors',
                 label === 'Technology'
                   ? 'border-b-2 border-accent-500 pb-1 font-bold text-accent-400'
                   : 'text-primary-100/70 hover:text-white',
@@ -60,7 +60,7 @@ export default function Connect() {
 
         <button
           type="button"
-          className="bg-accent-500 px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-accent-600"
+          className="shrink-0 whitespace-nowrap bg-accent-500 px-4 py-2.5 font-mono text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-accent-600 md:px-5"
         >
           Start Learning
         </button>
@@ -94,7 +94,7 @@ export default function Connect() {
               </div>
             </div>
             <div className="mt-3 flex items-center justify-between px-1">
-              <span className="font-mono text-xs text-primary-900/60">01. CAMERA ACTIVE</span>
+              <span className="font-mono text-xs text-primary-900/70">01. CAMERA ACTIVE</span>
               <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-red-500" />
             </div>
           </div>
@@ -142,7 +142,7 @@ export default function Connect() {
           </div>
 
           <div className="flex h-96 w-full max-w-sm flex-col border border-primary-900/20 bg-primary-900/5 p-5 shadow-sm backdrop-blur-md sm:p-6">
-            <div className="mb-4 border-b border-primary-900/20 pb-2 font-mono text-xs uppercase tracking-widest text-primary-900/60">
+            <div className="mb-4 border-b border-primary-900/20 pb-2 font-mono text-xs uppercase tracking-widest text-primary-900/70">
               Live Chat
             </div>
             <div className="flex flex-1 flex-col justify-end gap-3 overflow-y-auto">
@@ -174,7 +174,7 @@ export default function Connect() {
                 <MicIcon className="h-4 w-4" />
                 Tap to Speak
               </button>
-              <span className="flex items-center gap-1.5 font-mono text-xs text-accent-600">
+              <span className="flex items-center gap-1.5 font-mono text-xs text-accent-800">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent-600" />
                 LISTENING
               </span>

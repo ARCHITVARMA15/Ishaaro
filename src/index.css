@@ -98,6 +98,54 @@ h6 {
   animation: checkmark-draw 0.45s 0.05s ease-out forwards;
 }
 
+/* HandPoseLoader: looping line-art hand-pose loading animation */
+@keyframes hand-loader-line {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 0.3;
+  }
+  45%,
+  75% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0.15;
+  }
+}
+.hand-loader-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: hand-loader-line 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes hand-loader-dot {
+  0%,
+  35% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  65%,
+  85% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.15;
+  }
+}
+.hand-loader-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hand-loader-dot 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
 /* Lessons: hand-drawn wobble ring on completed flashcards */
 @keyframes scribble-pulse {
   0% {

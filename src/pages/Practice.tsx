@@ -1,7 +1,7 @@
 export default function Practice() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-      <span className="inline-block rounded-full bg-accent-50 px-3 py-1 text-xs font-semibold text-accent-700">
+      <span className="inline-block rounded-full bg-accent-50 px-3 py-1 text-xs font-semibold text-accent-800">
         Student Practice
       </span>
       <h1 className="mt-3 font-heading text-3xl font-bold text-primary-950 sm:text-4xl">

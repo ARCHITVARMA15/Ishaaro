@@ -24,7 +24,7 @@ export default function Landing() {
       <section className="mx-auto max-w-6xl px-4 pb-16 pt-14 sm:px-6 sm:pt-20">
         <div className="mx-auto max-w-3xl text-center">
           <span
-            className="font-gujarati text-4xl text-accent-500 sm:text-5xl"
+            className="font-gujarati text-4xl text-accent-700 sm:text-5xl"
             lang="gu"
           >
             ઇશારો

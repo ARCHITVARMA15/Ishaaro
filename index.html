@@ -11,9 +11,83 @@
       rel="stylesheet"
     />
     <title>Ishaaro</title>
+    <style>
+      /* Static (JS-free) initial-load loader. Lives inside #root so React's
+         first render() call replaces it automatically once the app mounts —
+         no cleanup script needed. Mirrors HandPoseLoader.tsx / index.css so
+         it reads as the same animation, not a placeholder swap. */
+      #initial-loader {
+        display: flex;
+        min-height: 100vh;
+        align-items: center;
+        justify-content: center;
+        background: #fdfbf7;
+      }
+      @keyframes hand-loader-line {
+        0% {
+          stroke-dashoffset: 1;
+          opacity: 0.3;
+        }
+        45%,
+        75% {
+          stroke-dashoffset: 0;
+          opacity: 1;
+        }
+        100% {
+          stroke-dashoffset: 0;
+          opacity: 0.15;
+        }
+      }
+      #initial-loader .hand-loader-line {
+        stroke-dasharray: 1;
+        stroke-dashoffset: 1;
+        animation: hand-loader-line 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+      }
+      @keyframes hand-loader-dot {
+        0%,
+        35% {
+          transform: scale(0);
+          opacity: 0;
+        }
+        50% {
+          transform: scale(1.15);
+          opacity: 1;
+        }
+        65%,
+        85% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 0.15;
+        }
+      }
+      #initial-loader .hand-loader-dot {
+        transform-box: fill-box;
+        transform-origin: center;
+        animation: hand-loader-dot 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="initial-loader">
+        <svg width="96" height="96" viewBox="0 0 100 100" role="status" aria-label="Loading Ishaaro">
+          <path class="hand-loader-line" d="M 50 90 L 35 70 L 20 55" fill="none" stroke="#1b4b43" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" pathLength="1" style="animation-delay: 0s" />
+          <path class="hand-loader-line" d="M 50 90 L 38 55 L 37 35 L 36 15" fill="none" stroke="#1b4b43" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" pathLength="1" style="animation-delay: 0.12s" />
+          <path class="hand-loader-line" d="M 50 90 L 48 50 L 48 25 L 48 8" fill="none" stroke="#1b4b43" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" pathLength="1" style="animation-delay: 0.24s" />
+          <path class="hand-loader-line" d="M 50 90 L 58 52 L 59 28 L 60 12" fill="none" stroke="#1b4b43" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" pathLength="1" style="animation-delay: 0.36s" />
+          <path class="hand-loader-line" d="M 50 90 L 66 58 L 68 40 L 70 25" fill="none" stroke="#1b4b43" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" pathLength="1" style="animation-delay: 0.48s" />
+          <circle class="hand-loader-dot" cx="50" cy="90" r="4.5" fill="#ff8c5a" style="animation-delay: 0s" />
+          <circle class="hand-loader-dot" cx="20" cy="55" r="4" fill="#ff8c5a" style="animation-delay: 0.5s" />
+          <circle class="hand-loader-dot" cx="36" cy="15" r="4" fill="#ff8c5a" style="animation-delay: 0.62s" />
+          <circle class="hand-loader-dot" cx="48" cy="8" r="4" fill="#ff8c5a" style="animation-delay: 0.74s" />
+          <circle class="hand-loader-dot" cx="60" cy="12" r="4" fill="#ff8c5a" style="animation-delay: 0.86s" />
+          <circle class="hand-loader-dot" cx="70" cy="25" r="4" fill="#ff8c5a" style="animation-delay: 0.98s" />
+        </svg>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
