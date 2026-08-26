@@ -91,16 +91,17 @@ function LanguageToast() {
 
 interface StitchHeaderProps {
   showLanguageToast?: boolean
+  onTakeTour?: () => void
 }
 
-export default function StitchHeader({ showLanguageToast = false }: StitchHeaderProps) {
+export default function StitchHeader({ showLanguageToast = false, onTakeTour }: StitchHeaderProps) {
   const { strings } = useLanguage()
   const navLinks = [
-    { to: '/practice', label: strings.nav.practice },
-    { to: '/lessons', label: strings.nav.lessons },
-    { to: '/teacher', label: strings.nav.teacher },
-    { to: '/parent', label: strings.nav.parent },
-    { to: '/connect', label: strings.nav.connect },
+    { to: '/practice', label: strings.nav.practice, tourId: 'nav-practice' },
+    { to: '/lessons', label: strings.nav.lessons, tourId: 'nav-lessons' },
+    { to: '/teacher', label: strings.nav.teacher, tourId: 'nav-teacher' },
+    { to: '/parent', label: strings.nav.parent, tourId: 'nav-parent' },
+    { to: '/connect', label: strings.nav.connect, tourId: undefined },
   ]
 
   const linkClasses = ({ isActive }: { isActive: boolean }) =>
@@ -116,6 +117,7 @@ export default function StitchHeader({ showLanguageToast = false }: StitchHeader
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-5 py-4 md:gap-3 md:px-6 lg:gap-4 lg:px-16">
         <Link
           to="/"
+          data-tour="wordmark"
           className="shrink-0 font-heading text-lg font-bold uppercase tracking-tight text-primary-900"
         >
           Ishaaro
@@ -123,13 +125,33 @@ export default function StitchHeader({ showLanguageToast = false }: StitchHeader
 
         <nav className="hidden items-center gap-3 md:flex lg:gap-8">
           {navLinks.map((link) => (
-            <NavLink key={link.to} to={link.to} className={linkClasses}>
+            <NavLink key={link.to} to={link.to} data-tour={link.tourId} className={linkClasses}>
               {link.label}
             </NavLink>
           ))}
         </nav>
 
         <div className="flex shrink-0 items-center gap-2 md:gap-3">
+          {onTakeTour && (
+            <button
+              type="button"
+              onClick={onTakeTour}
+              className="hidden shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-primary-900/20 px-3 py-1.5 font-mono text-xs text-primary-900/60 transition-colors hover:border-primary-900/40 hover:text-primary-900 lg:flex"
+            >
+              <svg viewBox="0 0 20 20" fill="none" className="h-3 w-3">
+                <circle cx="10" cy="10" r="7.5" stroke="currentColor" strokeWidth="1.5" />
+                <path
+                  d="M7.8 7.8a2.2 2.2 0 1 1 3.3 1.9c-.7.4-1.1.8-1.1 1.6"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+                <circle cx="10" cy="14" r="0.6" fill="currentColor" />
+              </svg>
+              Take a tour
+            </button>
+          )}
+
           <div className="relative shrink-0">
             <LanguageToggle />
             {showLanguageToast && <LanguageToast />}
@@ -137,6 +159,7 @@ export default function StitchHeader({ showLanguageToast = false }: StitchHeader
 
           <Link
             to="/practice"
+            data-tour="cta-start-learning"
             className="flex shrink-0 items-center gap-2 whitespace-nowrap bg-primary-700 px-4 py-3 font-body text-sm font-bold uppercase tracking-wide text-white transition-colors hover:bg-primary-800 md:px-5"
           >
             {strings.nav.startLearning}

@@ -1,17 +1,54 @@
+import { useCallback, useEffect, useState } from 'react'
 import handMesh from '../assets/landingpage/hand-mesh.jpg'
 import handsPhoto from '../assets/landingpage/hands-photo.jpg'
+import OnboardingTour from '../components/OnboardingTour'
 import StitchFooter from '../components/StitchFooter'
 import StitchHeader from '../components/StitchHeader'
 import { ArrowIcon, SearchIcon } from '../components/icons'
 import { useLanguage } from '../i18n/LanguageContext'
 
+const HAS_SEEN_TOUR_KEY = 'hasSeenTour'
+const AUTO_START_DELAY_MS = 800
+// The header nav (and its tour targets) only render at md+ — see StitchHeader.
+const TOUR_MIN_VIEWPORT_WIDTH = 768
+
 export default function LandingPage() {
   const { lang, strings } = useLanguage()
   const { landing } = strings
+  const [tourRun, setTourRun] = useState(false)
+  const [tourKey, setTourKey] = useState(0)
+
+  useEffect(() => {
+    if (window.innerWidth < TOUR_MIN_VIEWPORT_WIDTH) return
+    let seen = true
+    try {
+      seen = window.localStorage.getItem(HAS_SEEN_TOUR_KEY) === 'true'
+    } catch {
+      seen = true // localStorage unavailable — don't auto-run, avoid surprising the user
+    }
+    if (seen) return
+    const timer = window.setTimeout(() => setTourRun(true), AUTO_START_DELAY_MS)
+    return () => window.clearTimeout(timer)
+  }, [])
+
+  const endTour = useCallback(() => {
+    setTourRun(false)
+    try {
+      window.localStorage.setItem(HAS_SEEN_TOUR_KEY, 'true')
+    } catch {
+      // localStorage unavailable — tour will simply auto-run again next visit
+    }
+  }, [])
+
+  const startTour = useCallback(() => {
+    setTourKey((key) => key + 1)
+    setTourRun(true)
+  }, [])
 
   return (
     <div lang={lang} className="min-h-screen bg-background font-body text-primary-900 antialiased">
-      <StitchHeader showLanguageToast />
+      <StitchHeader showLanguageToast onTakeTour={startTour} />
+      <OnboardingTour key={tourKey} run={tourRun} onEnd={endTour} />
 
       <main>
         {/* Hero */}
