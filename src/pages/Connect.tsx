@@ -62,7 +62,10 @@ export default function Connect() {
 
   const { pose, gloss, playingId, stepIndex, stepCount, play, playById } = useSignPlayback(
     useCallback(
-      (sentence) => setCaptionText(sttLang === 'gu-IN' ? sentence.displayTextGu : sentence.displayText),
+      (sentence) =>
+        setCaptionText(
+          sttLang === 'gu-IN' && sentence.displayTextGu ? sentence.displayTextGu : sentence.displayText,
+        ),
       [sttLang],
     ),
   )
@@ -77,7 +80,10 @@ export default function Connect() {
       const buffer = wordBufferRef.current.join(' ')
 
       for (const sentence of SIGN_SENTENCES) {
+        // Not every sentence has a Gujarati target yet — skip rather than
+        // match against an empty string when one's missing.
         const target = sttLang === 'gu-IN' ? sentence.textGu : sentence.text
+        if (!target) continue
         if (similarity(target, buffer) >= MATCH_THRESHOLD) {
           play(sentence)
           wordBufferRef.current = []
@@ -111,21 +117,6 @@ export default function Connect() {
     previewContainerRef,
     cameraStatus === 'granted',
   )
-
-  // Hidden fallback for a live demo: 1 / 2 / 3 force-plays a sentence's sign
-  // sequence exactly as if the mic had heard it, no visible tell.
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.metaKey || e.ctrlKey || e.altKey) return
-      const target = e.target as HTMLElement | null
-      if (target && ['INPUT', 'TEXTAREA'].includes(target.tagName)) return
-      if (e.key === '1' || e.key === '2' || e.key === '3') {
-        playById(Number(e.key) as 1 | 2 | 3)
-      }
-    }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [playById])
 
   return (
     <div className="flex min-h-screen flex-col bg-background font-body text-primary-900 antialiased">
@@ -429,6 +420,8 @@ export default function Connect() {
                 gloss={gloss}
                 stepIndex={stepIndex}
                 stepCount={stepCount}
+                sentences={SIGN_SENTENCES}
+                onSelectSentence={playById}
               />
             </div>
           </div>

@@ -259,8 +259,26 @@ h6 {
   }
 }
 
-/* Connect: sign avatar pose transition — a quick settle-in each time the
-   flipbook advances, so it reads as motion rather than an abrupt frame cut. */
+/* Connect: sign avatar idle micro-movement — a barely-perceptible sway so
+   the hand doesn't look frozen while holding a pose between transitions.
+   transform-box/transform-origin are set inline (view-box units, matching
+   the SVG's own coordinate space) rather than here. */
+@keyframes hand-idle-breathe {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.012) rotate(0.6deg);
+  }
+}
+.animate-hand-idle-breathe {
+  animation: hand-idle-breathe 3.6s ease-in-out infinite;
+}
+
+/* Connect: skeletal sign avatar pose transition — a quick settle-in each
+   time the flipbook advances, since that illustration hard-cuts between
+   discrete poses (see the filled style's continuous motion above instead). */
 @keyframes hand-pose-pulse {
   from {
     opacity: 0.4;
@@ -274,5 +292,5 @@ h6 {
 .animate-hand-pose-pulse {
   transform-box: fill-box;
   transform-origin: center;
-  animation: hand-pose-pulse 140ms ease-out;
+  animation: hand-pose-pulse 220ms ease-out;
 }
