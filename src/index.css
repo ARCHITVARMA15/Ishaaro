@@ -4,6 +4,8 @@
   --font-heading: "Sora", ui-sans-serif, system-ui, sans-serif;
   --font-body: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-gujarati: "Noto Sans Gujarati", ui-sans-serif, system-ui, sans-serif;
+  --font-script: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
   /* Primary: deep teal, base at 700 (#1B4B43) */
   --color-primary-50: #eff6f4;
