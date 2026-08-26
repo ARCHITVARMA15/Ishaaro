@@ -1,41 +1,187 @@
+import { Link } from 'react-router-dom'
+import { MicIcon, SyncIcon, VideoIcon } from '../components/icons'
+
+const NAV_LINKS = ['Curriculum', 'Technology', 'Philosophy', 'Archive']
+
+interface Particle {
+  top: string
+  left: string
+  color: string
+  glow: string
+  direction: 'forward' | 'reverse'
+  delay: string
+  duration: string
+}
+
+const PARTICLES: Particle[] = [
+  { top: '20%', left: '35%', color: '#5f9f8e', glow: 'rgba(95,159,142,0.7)', direction: 'forward', delay: '0s', duration: '3.2s' },
+  { top: '65%', left: '55%', color: '#ff8c5a', glow: 'rgba(255,140,90,0.7)', direction: 'reverse', delay: '0.6s', duration: '3.6s' },
+  { top: '40%', left: '45%', color: '#5f9f8e', glow: 'rgba(95,159,142,0.7)', direction: 'forward', delay: '1.2s', duration: '3s' },
+  { top: '80%', left: '30%', color: '#ff8c5a', glow: 'rgba(255,140,90,0.7)', direction: 'reverse', delay: '1.8s', duration: '3.4s' },
+  { top: '10%', left: '60%', color: '#5f9f8e', glow: 'rgba(95,159,142,0.7)', direction: 'forward', delay: '2.2s', duration: '3.8s' },
+  { top: '55%', left: '40%', color: '#ff8c5a', glow: 'rgba(255,140,90,0.7)', direction: 'reverse', delay: '0.3s', duration: '3.1s' },
+]
+
+const SIGNER_CAPTION = '"...requesting a doctor\'s appointment for tomorrow morning."'
+
+const CHAT_MESSAGES = [
+  { from: 'signer' as const, text: 'Hi, I’d like to book an appointment.' },
+  { from: 'you' as const, text: 'Of course — what day works for you?' },
+  { from: 'signer' as const, text: 'Tomorrow morning, if possible.' },
+]
+
 export default function Connect() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-      <span className="inline-block rounded-full bg-accent-50 px-3 py-1 text-xs font-semibold text-accent-700">
-        Comms Bridge
-      </span>
-      <h1 className="mt-3 font-heading text-3xl font-bold text-primary-950 sm:text-4xl">
-        Stay Connected
-      </h1>
-      <p className="mt-2 max-w-xl text-primary-700">
-        Keep teachers and parents in sync with quick updates, in any
-        language.
-      </p>
+    <div className="flex min-h-screen flex-col bg-background font-body text-primary-900 antialiased md:h-screen md:overflow-hidden">
+      <nav className="sticky top-0 z-50 flex items-center justify-between border-b border-primary-100 bg-primary-900 px-5 py-4 text-white md:px-16">
+        <Link
+          to="/connect"
+          className="font-heading text-lg font-bold uppercase tracking-tight text-white"
+        >
+          Ishaaro
+        </Link>
 
-      <div className="mt-8 rounded-3xl border border-primary-100 bg-white p-6 shadow-sm sm:p-8">
-        <form className="flex flex-col gap-4">
-          <div>
-            <label
-              htmlFor="message"
-              className="text-sm font-semibold text-primary-700"
+        <div className="hidden items-center gap-8 md:flex">
+          {NAV_LINKS.map((label) => (
+            <a
+              key={label}
+              href="#"
+              className={[
+                'font-mono text-sm tracking-wide transition-colors',
+                label === 'Technology'
+                  ? 'border-b-2 border-accent-500 pb-1 font-bold text-accent-400'
+                  : 'text-primary-100/70 hover:text-white',
+              ].join(' ')}
             >
-              Message
-            </label>
-            <textarea
-              id="message"
-              rows={4}
-              placeholder="Write an update to share..."
-              className="mt-2 w-full rounded-2xl border border-primary-100 bg-background px-4 py-3 text-sm text-primary-950 focus:border-primary-400 focus:outline-none"
-            />
+              {label}
+            </a>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          className="bg-accent-500 px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-accent-600"
+        >
+          Start Learning
+        </button>
+      </nav>
+
+      <main className="relative flex flex-1 flex-col md:flex-row md:overflow-hidden">
+        {/* Left: Deaf/Mute user */}
+        <section className="relative flex flex-1 flex-col items-center justify-center gap-6 border-b border-primary-900/10 bg-white/50 p-5 pb-14 md:border-b-0 md:border-r md:p-16">
+          <div className="w-full max-w-sm self-start">
+            <h2 className="font-heading text-2xl font-semibold text-primary-900">
+              Deaf/Mute User
+            </h2>
+            <div className="mt-2 h-1 w-12 bg-accent-500" />
           </div>
-          <button
-            type="button"
-            className="self-start rounded-full bg-primary-700 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-800"
-          >
-            Send Update
-          </button>
-        </form>
-      </div>
+
+          <div className="w-full max-w-sm border border-white/60 bg-white/40 p-3 shadow-sm backdrop-blur-md">
+            <div className="relative aspect-[3/4] w-full overflow-hidden bg-primary-100/60">
+              <div className="absolute inset-0 flex items-center justify-center text-primary-900/25">
+                <VideoIcon className="h-14 w-14" />
+              </div>
+
+              <div className="absolute left-3 top-3 h-5 w-5 border-l-2 border-t-2 border-accent-600" />
+              <div className="absolute right-3 top-3 h-5 w-5 border-r-2 border-t-2 border-accent-600" />
+              <div className="absolute bottom-3 left-3 h-5 w-5 border-b-2 border-l-2 border-accent-600" />
+              <div className="absolute bottom-3 right-3 h-5 w-5 border-b-2 border-r-2 border-accent-600" />
+
+              <div className="absolute inset-x-0 bottom-0 bg-primary-900/85 px-3 py-2 backdrop-blur-sm">
+                <p className="font-body text-xs leading-snug text-white/90 sm:text-sm">
+                  {SIGNER_CAPTION}
+                </p>
+              </div>
+            </div>
+            <div className="mt-3 flex items-center justify-between px-1">
+              <span className="font-mono text-xs text-primary-900/60">01. CAMERA ACTIVE</span>
+              <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-red-500" />
+            </div>
+          </div>
+        </section>
+
+        {/* Center divider: bidirectional particle beam. Sits in normal flex
+            flow between the two sections on mobile (a horizontal seam of
+            natural height), then switches to an absolutely-positioned
+            overlay on the seam between the two side-by-side sections on
+            desktop — so it always lands exactly between the panels
+            regardless of how tall either one renders. */}
+        <div className="pointer-events-none relative z-30 h-20 w-full shrink-0 md:absolute md:inset-y-0 md:left-1/2 md:h-full md:w-20 md:-translate-x-1/2">
+          <div className="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-gradient-to-r from-transparent via-primary-300 to-transparent md:left-1/2 md:top-0 md:h-full md:w-px md:-translate-x-1/2 md:translate-y-0 md:bg-gradient-to-b" />
+
+          {PARTICLES.map((p, i) => (
+            <span
+              key={i}
+              className={[
+                'absolute h-2 w-2 rounded-full',
+                p.direction === 'forward' ? 'particle-forward' : 'particle-reverse',
+              ].join(' ')}
+              style={{
+                top: p.top,
+                left: p.left,
+                backgroundColor: p.color,
+                boxShadow: `0 0 8px 2px ${p.glow}`,
+                animationDelay: p.delay,
+                animationDuration: p.duration,
+              }}
+            />
+          ))}
+
+          <div className="absolute left-1/2 top-1/2 z-10 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-primary-900 bg-background shadow-[4px_4px_0px_#1b4b43]">
+            <SyncIcon className="h-5 w-5 text-primary-900" />
+          </div>
+        </div>
+
+        {/* Right: Hearing user */}
+        <section className="relative flex flex-1 flex-col items-center justify-center gap-6 bg-primary-50/60 p-5 pt-14 md:p-16">
+          <div className="w-full max-w-sm self-end text-right">
+            <h2 className="font-heading text-2xl font-semibold text-primary-900">
+              Hearing User
+            </h2>
+            <div className="ml-auto mt-2 h-1 w-12 bg-primary-700" />
+          </div>
+
+          <div className="flex h-96 w-full max-w-sm flex-col border border-primary-900/20 bg-primary-900/5 p-5 shadow-sm backdrop-blur-md sm:p-6">
+            <div className="mb-4 border-b border-primary-900/20 pb-2 font-mono text-xs uppercase tracking-widest text-primary-900/60">
+              Live Chat
+            </div>
+            <div className="flex flex-1 flex-col justify-end gap-3 overflow-y-auto">
+              {CHAT_MESSAGES.map((msg, i) => (
+                <div
+                  key={i}
+                  className={
+                    msg.from === 'signer' ? 'flex justify-start' : 'flex justify-end'
+                  }
+                >
+                  <p
+                    className={[
+                      'max-w-[85%] px-4 py-2 text-sm leading-snug',
+                      msg.from === 'signer'
+                        ? 'bg-primary-700 text-white'
+                        : 'border border-primary-900/30 bg-white text-primary-900',
+                    ].join(' ')}
+                  >
+                    {msg.text}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 flex items-center justify-between border-t border-primary-900/20 pt-4">
+              <button
+                type="button"
+                className="flex items-center gap-2 border-2 border-primary-900 px-4 py-2 font-mono text-xs uppercase tracking-widest text-primary-900 transition-colors hover:bg-primary-900 hover:text-white"
+              >
+                <MicIcon className="h-4 w-4" />
+                Tap to Speak
+              </button>
+              <span className="flex items-center gap-1.5 font-mono text-xs text-accent-600">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent-600" />
+                LISTENING
+              </span>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
   )
 }

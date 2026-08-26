@@ -97,3 +97,94 @@ h6 {
   stroke-dashoffset: 1;
   animation: checkmark-draw 0.45s 0.05s ease-out forwards;
 }
+
+/* Lessons: hand-drawn wobble ring on completed flashcards */
+@keyframes scribble-pulse {
+  0% {
+    border-radius: 50% 60% 40% 70% / 60% 40% 70% 50%;
+  }
+  100% {
+    border-radius: 60% 40% 70% 50% / 50% 60% 40% 70%;
+  }
+}
+.animate-scribble-pulse {
+  animation: scribble-pulse 4s ease-in-out infinite alternate;
+}
+
+/* Connect: bidirectional particle beam along the center divider.
+   Flows along X on mobile (panels stack, divider is horizontal) and
+   along Y on desktop (divider is vertical) via the md: override below. */
+@keyframes particle-forward-x {
+  0% {
+    transform: translateX(-10%);
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(110%);
+    opacity: 0;
+  }
+}
+@keyframes particle-reverse-x {
+  0% {
+    transform: translateX(110%);
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-10%);
+    opacity: 0;
+  }
+}
+@keyframes particle-forward-y {
+  0% {
+    transform: translateY(-10%);
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110%);
+    opacity: 0;
+  }
+}
+@keyframes particle-reverse-y {
+  0% {
+    transform: translateY(110%);
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-10%);
+    opacity: 0;
+  }
+}
+.particle-forward {
+  animation-name: particle-forward-x;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+.particle-reverse {
+  animation-name: particle-reverse-x;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+@media (min-width: 768px) {
+  .particle-forward {
+    animation-name: particle-forward-y;
+  }
+  .particle-reverse {
+    animation-name: particle-reverse-y;
+  }
+}
