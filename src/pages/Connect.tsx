@@ -1,5 +1,19 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { MicIcon, SyncIcon, VideoIcon } from '../components/icons'
+import CaptionPanel from '../components/connect/CaptionPanel'
+import SignAvatarPanel from '../components/connect/SignAvatarPanel'
+import { CameraOffIcon, MicIcon, SyncIcon, VideoIcon } from '../components/icons'
+import { useCameraPreview } from '../hooks/useCameraPreview'
+import { useHandLandmarkOverlay } from '../hooks/useHandLandmarkOverlay'
+import { useSignPlayback } from '../hooks/useSignPlayback'
+import { useSpeechRecognition } from '../hooks/useSpeechRecognition'
+import { MATCH_THRESHOLD, normalizeForMatch, similarity } from '../lib/connect/fuzzyMatch'
+import { SIGN_SENTENCES } from '../lib/connect/signSequences'
+
+// Rolling window of recently-heard words used for fuzzy matching against the
+// 3 target sentences. Capped so a long demo session doesn't keep matching
+// against words spoken minutes ago.
+const MATCH_BUFFER_WORDS = 24
 
 const NAV_LINKS = [
   { to: '/practice', label: 'Practice' },
@@ -36,9 +50,85 @@ const CHAT_MESSAGES = [
   { from: 'signer' as const, text: 'Tomorrow morning, if possible.' },
 ]
 
+const STT_LANGUAGES = [
+  { value: 'en-US' as const, label: 'English' },
+  { value: 'gu-IN' as const, label: 'ગુજરાતી' },
+]
+
 export default function Connect() {
+  const [captionText, setCaptionText] = useState('')
+  const [sttLang, setSttLang] = useState<'en-US' | 'gu-IN'>('en-US')
+  const wordBufferRef = useRef<string[]>([])
+
+  const { pose, gloss, playingId, stepIndex, stepCount, play, playById } = useSignPlayback(
+    useCallback(
+      (sentence) => setCaptionText(sttLang === 'gu-IN' ? sentence.displayTextGu : sentence.displayText),
+      [sttLang],
+    ),
+  )
+
+  const handleFinalResult = useCallback(
+    (text: string) => {
+      const cleaned = text.trim()
+      if (cleaned) setCaptionText(cleaned)
+
+      const words = normalizeForMatch(text).split(' ').filter(Boolean)
+      wordBufferRef.current = [...wordBufferRef.current, ...words].slice(-MATCH_BUFFER_WORDS)
+      const buffer = wordBufferRef.current.join(' ')
+
+      for (const sentence of SIGN_SENTENCES) {
+        const target = sttLang === 'gu-IN' ? sentence.textGu : sentence.text
+        if (similarity(target, buffer) >= MATCH_THRESHOLD) {
+          play(sentence)
+          wordBufferRef.current = []
+          break
+        }
+      }
+    },
+    [play, sttLang],
+  )
+
+  const { supported, listening, interimText, start, stop } = useSpeechRecognition({
+    onFinalResult: handleFinalResult,
+    lang: sttLang,
+  })
+
+  // Clear stale text on a language switch so an English caption never
+  // lingers under the Gujarati font (or vice versa) after toggling.
+  useEffect(() => {
+    setCaptionText('')
+    wordBufferRef.current = []
+  }, [sttLang])
+
+  const { status: cameraStatus, videoRef: previewVideoRef, enableCamera } = useCameraPreview()
+  const previewCanvasRef = useRef<HTMLCanvasElement>(null)
+  const previewContainerRef = useRef<HTMLDivElement>(null)
+  // Points-only MediaPipe overlay on the live preview — no finger counting,
+  // matching, or coaching, just the landmark skeleton drawn on top.
+  useHandLandmarkOverlay(
+    previewVideoRef,
+    previewCanvasRef,
+    previewContainerRef,
+    cameraStatus === 'granted',
+  )
+
+  // Hidden fallback for a live demo: 1 / 2 / 3 force-plays a sentence's sign
+  // sequence exactly as if the mic had heard it, no visible tell.
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.metaKey || e.ctrlKey || e.altKey) return
+      const target = e.target as HTMLElement | null
+      if (target && ['INPUT', 'TEXTAREA'].includes(target.tagName)) return
+      if (e.key === '1' || e.key === '2' || e.key === '3') {
+        playById(Number(e.key) as 1 | 2 | 3)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [playById])
+
   return (
-    <div className="flex min-h-screen flex-col bg-background font-body text-primary-900 antialiased md:h-screen md:overflow-hidden">
+    <div className="flex min-h-screen flex-col bg-background font-body text-primary-900 antialiased">
       <nav className="sticky top-0 z-50 flex items-center justify-between gap-3 border-b border-primary-100 bg-primary-900 px-5 py-4 text-white md:gap-4 md:px-8 lg:px-16">
         <Link
           to="/connect"
@@ -92,17 +182,58 @@ export default function Connect() {
           </div>
 
           <div className="w-full max-w-sm border border-white/60 bg-white/40 p-3 shadow-sm backdrop-blur-md">
-            <div className="relative aspect-[3/4] w-full overflow-hidden bg-primary-100/60">
-              <div className="absolute inset-0 flex items-center justify-center text-primary-900/25">
-                <VideoIcon className="h-14 w-14" />
-              </div>
+            <div
+              ref={previewContainerRef}
+              className="relative aspect-[3/4] w-full overflow-hidden bg-primary-100/60"
+            >
+              {cameraStatus === 'granted' ? (
+                <>
+                  <video
+                    ref={previewVideoRef}
+                    muted
+                    playsInline
+                    autoPlay
+                    className="absolute inset-0 h-full w-full object-cover [transform:scaleX(-1)]"
+                  />
+                  <canvas
+                    ref={previewCanvasRef}
+                    className="pointer-events-none absolute inset-0 h-full w-full [transform:scaleX(-1)]"
+                  />
+                </>
+              ) : (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6 text-center text-primary-900/25">
+                  {cameraStatus === 'denied' ? (
+                    <>
+                      <CameraOffIcon className="h-12 w-12 text-primary-900/40" />
+                      <p className="font-mono text-xs text-primary-900/50">
+                        Camera access was denied
+                      </p>
+                    </>
+                  ) : (
+                    <VideoIcon className="h-14 w-14" />
+                  )}
+                  <button
+                    type="button"
+                    onClick={enableCamera}
+                    disabled={cameraStatus === 'requesting'}
+                    className="flex items-center gap-2 border-2 border-primary-900 bg-background px-4 py-2 font-mono text-xs uppercase tracking-widest text-primary-900 transition-colors hover:bg-primary-900 hover:text-white disabled:cursor-wait disabled:opacity-60"
+                  >
+                    <VideoIcon className="h-4 w-4" />
+                    {cameraStatus === 'requesting'
+                      ? 'Requesting…'
+                      : cameraStatus === 'denied'
+                        ? 'Try Again'
+                        : 'Enable Camera'}
+                  </button>
+                </div>
+              )}
 
-              <div className="absolute left-3 top-3 h-5 w-5 border-l-2 border-t-2 border-accent-600" />
-              <div className="absolute right-3 top-3 h-5 w-5 border-r-2 border-t-2 border-accent-600" />
-              <div className="absolute bottom-3 left-3 h-5 w-5 border-b-2 border-l-2 border-accent-600" />
-              <div className="absolute bottom-3 right-3 h-5 w-5 border-b-2 border-r-2 border-accent-600" />
+              <div className="pointer-events-none absolute left-3 top-3 h-5 w-5 border-l-2 border-t-2 border-accent-600" />
+              <div className="pointer-events-none absolute right-3 top-3 h-5 w-5 border-r-2 border-t-2 border-accent-600" />
+              <div className="pointer-events-none absolute bottom-3 left-3 h-5 w-5 border-b-2 border-l-2 border-accent-600" />
+              <div className="pointer-events-none absolute bottom-3 right-3 h-5 w-5 border-b-2 border-r-2 border-accent-600" />
 
-              <div className="absolute inset-x-0 bottom-0 bg-primary-900/85 px-3 py-2 backdrop-blur-sm">
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-primary-900/85 px-3 py-2 backdrop-blur-sm">
                 <p className="font-body text-xs leading-snug text-white/90 sm:text-sm">
                   {SIGNER_CAPTION}
                 </p>
@@ -110,7 +241,12 @@ export default function Connect() {
             </div>
             <div className="mt-3 flex items-center justify-between px-1">
               <span className="font-mono text-xs text-primary-900/70">01. CAMERA PREVIEW</span>
-              <span className="h-2.5 w-2.5 rounded-full bg-primary-300" />
+              <span
+                className={[
+                  'h-2.5 w-2.5 rounded-full',
+                  cameraStatus === 'granted' ? 'animate-pulse bg-accent-500' : 'bg-primary-300',
+                ].join(' ')}
+              />
             </div>
           </div>
         </section>
@@ -197,6 +333,107 @@ export default function Connect() {
           </div>
         </section>
       </main>
+
+      {/* Live speech-to-sign demo — a real, working translation, distinct
+          from the aspirational two-panel mockup above. */}
+      <section className="border-t border-primary-900/10 bg-background px-5 py-14 md:px-16 md:py-20">
+        <div className="mx-auto max-w-5xl">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 className="font-heading text-2xl font-semibold text-primary-900 sm:text-3xl">
+                Live Demo
+              </h2>
+              <p className="mt-1 max-w-md text-sm text-primary-900/60">
+                The Hearing User speaks — Ishaaro signs it back live for the
+                Deaf/Mute User to follow, no lip-reading or typing needed.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-4">
+              <div
+                role="group"
+                aria-label="Speech recognition language"
+                className="flex shrink-0 items-center gap-0.5 rounded-full border border-primary-900 p-0.5 font-mono text-xs font-bold"
+              >
+                {STT_LANGUAGES.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => setSttLang(option.value)}
+                    aria-pressed={sttLang === option.value}
+                    className={[
+                      'rounded-full px-2.5 py-1.5 transition-colors',
+                      option.value === 'gu-IN' ? 'font-gujarati' : '',
+                      sttLang === option.value
+                        ? 'bg-primary-700 text-white'
+                        : 'text-primary-900/50 hover:text-primary-900',
+                    ].join(' ')}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={listening ? stop : start}
+                disabled={!supported}
+                className={[
+                  'flex shrink-0 items-center gap-2 border-2 px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-widest transition-colors disabled:cursor-not-allowed disabled:opacity-40',
+                  listening
+                    ? 'border-accent-600 bg-accent-500 text-white hover:bg-accent-600'
+                    : 'border-primary-900 text-primary-900 hover:bg-primary-900 hover:text-white',
+                ].join(' ')}
+              >
+                <MicIcon className="h-4 w-4" />
+                {listening ? 'Stop Mic' : 'Start Mic'}
+              </button>
+
+              <span className="flex items-center gap-1.5 whitespace-nowrap font-mono text-xs text-primary-900/60">
+                <span
+                  className={[
+                    'h-1.5 w-1.5 rounded-full',
+                    listening ? 'animate-pulse bg-accent-500' : 'bg-primary-300',
+                  ].join(' ')}
+                />
+                {supported
+                  ? listening
+                    ? 'Listening…'
+                    : 'Mic off'
+                  : 'Speech recognition isn’t supported in this browser'}
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-[1.4fr_1fr]">
+            <div className="flex flex-col gap-3">
+              <span className="font-mono text-xs uppercase tracking-widest text-primary-900/50">
+                Hearing User — speaking
+              </span>
+              <CaptionPanel
+                speakerLabel="You"
+                listening={listening}
+                primaryText={captionText}
+                secondaryText={interimText}
+                scriptLang={sttLang === 'gu-IN' ? 'gu' : 'en'}
+              />
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <span className="font-mono text-xs uppercase tracking-widest text-primary-900/50">
+                Deaf/Mute User — watching
+              </span>
+              <SignAvatarPanel
+                pose={pose}
+                playing={playingId !== null}
+                gloss={gloss}
+                stepIndex={stepIndex}
+                stepCount={stepCount}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

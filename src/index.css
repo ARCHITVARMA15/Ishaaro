@@ -258,3 +258,21 @@ h6 {
     animation-name: particle-reverse-y;
   }
 }
+
+/* Connect: sign avatar pose transition — a quick settle-in each time the
+   flipbook advances, so it reads as motion rather than an abrupt frame cut. */
+@keyframes hand-pose-pulse {
+  from {
+    opacity: 0.4;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-hand-pose-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hand-pose-pulse 140ms ease-out;
+}

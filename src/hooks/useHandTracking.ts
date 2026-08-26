@@ -1,11 +1,8 @@
-import { FilesetResolver, HandLandmarker } from '@mediapipe/tasks-vision'
+import { HandLandmarker } from '@mediapipe/tasks-vision'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { createHandLandmarker } from '../lib/mediapipe/handLandmarker'
 import { countExtendedFingers, type HandLandmark } from '../lib/practice/fingerCount'
 import { drawHandSkeleton } from '../lib/practice/drawHandSkeleton'
-
-const WASM_BASE = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/wasm'
-const MODEL_URL =
-  'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task'
 
 export type CameraStatus =
   | 'idle'
@@ -20,27 +17,6 @@ export type ModelStatus = 'loading' | 'ready' | 'error'
 // frame (motion blur, a finger mid-curl) shouldn't be enough to flip the
 // reported count — we take the mode of a short rolling window instead.
 const SMOOTHING_WINDOW = 5
-
-async function createHandLandmarker() {
-  const vision = await FilesetResolver.forVisionTasks(WASM_BASE)
-  const options = {
-    baseOptions: { modelAssetPath: MODEL_URL },
-    runningMode: 'VIDEO' as const,
-    numHands: 1,
-  }
-  try {
-    return await HandLandmarker.createFromOptions(vision, {
-      ...options,
-      baseOptions: { ...options.baseOptions, delegate: 'GPU' as const },
-    })
-  } catch (err) {
-    console.warn('GPU delegate unavailable for HandLandmarker, falling back to CPU', err)
-    return HandLandmarker.createFromOptions(vision, {
-      ...options,
-      baseOptions: { ...options.baseOptions, delegate: 'CPU' as const },
-    })
-  }
-}
 
 export function useHandTracking() {
   const videoRef = useRef<HTMLVideoElement | null>(null)
