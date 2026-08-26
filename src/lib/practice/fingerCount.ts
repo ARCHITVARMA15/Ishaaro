@@ -4,9 +4,8 @@ export interface HandLandmark {
   z: number
 }
 
-// MediaPipe's 21-point hand model. Tip / PIP ("lower knuckle") pairs for the
-// four fingers that extend/curl mostly along the y-axis, plus the joints used
-// to judge the thumb, which splays sideways instead.
+// MediaPipe's 21-point hand model.
+const WRIST = 0
 const INDEX_TIP = 8
 const INDEX_PIP = 6
 const MIDDLE_TIP = 12
@@ -23,44 +22,78 @@ const MIDDLE_MCP = 9
 const RING_MCP = 13
 const PINKY_MCP = 17
 
+// A tip must sit at least this much farther out than its own reference joint
+// to count as "extended" — gives noisy/imperfectly-curled frames some slack
+// instead of flipping on a razor's edge.
+const EXTENSION_MARGIN = 1.15
+
+function distance(a: HandLandmark, b: HandLandmark): number {
+  return Math.hypot(a.x - b.x, a.y - b.y)
+}
+
+/**
+ * A finger is extended when its tip is meaningfully farther from the wrist
+ * than its PIP joint is. Unlike a raw y-position comparison, this holds
+ * regardless of how the hand is rotated or tilted in frame — a curled finger
+ * folds its tip back toward the wrist no matter which way the hand is facing.
+ */
 function isFingerExtended(
   landmarks: HandLandmark[],
+  wrist: HandLandmark,
   tipIndex: number,
   pipIndex: number,
 ): boolean {
-  return landmarks[tipIndex].y < landmarks[pipIndex].y
+  const tipDistance = distance(landmarks[tipIndex], wrist)
+  const pipDistance = distance(landmarks[pipIndex], wrist)
+  return tipDistance > pipDistance * EXTENSION_MARGIN
 }
 
 function isThumbExtended(landmarks: HandLandmark[]): boolean {
-  const palmCenterX =
-    (landmarks[INDEX_MCP].x +
-      landmarks[MIDDLE_MCP].x +
-      landmarks[RING_MCP].x +
-      landmarks[PINKY_MCP].x) /
-    4
+  // 2D distance from the palm center, not just x-distance — the thumb splays
+  // sideways relative to the palm, but "sideways" rotates along with the
+  // hand, so the x-axis alone isn't a stable proxy for it once the hand
+  // tilts. Full 2D distance holds regardless of hand orientation.
+  const palmCenter: HandLandmark = {
+    x:
+      (landmarks[INDEX_MCP].x +
+        landmarks[MIDDLE_MCP].x +
+        landmarks[RING_MCP].x +
+        landmarks[PINKY_MCP].x) /
+      4,
+    y:
+      (landmarks[INDEX_MCP].y +
+        landmarks[MIDDLE_MCP].y +
+        landmarks[RING_MCP].y +
+        landmarks[PINKY_MCP].y) /
+      4,
+    z: 0,
+  }
 
-  const thumbTipDistance = Math.abs(landmarks[THUMB_TIP].x - palmCenterX)
-  const thumbBaseDistance = Math.abs(landmarks[THUMB_MCP].x - palmCenterX)
+  const thumbTipDistance = distance(landmarks[THUMB_TIP], palmCenter)
+  const thumbBaseDistance = distance(landmarks[THUMB_MCP], palmCenter)
 
-  return thumbTipDistance > thumbBaseDistance
+  return thumbTipDistance > thumbBaseDistance * EXTENSION_MARGIN
 }
 
 /**
  * Pure function: given the 21 normalized MediaPipe hand landmarks, returns
- * how many fingers are extended (0-5). Each of the four fingers is judged by
- * comparing its tip's y-position to its PIP joint (the "lower knuckle"); the
- * thumb is judged by x-distance from the palm center instead, since it
- * extends sideways rather than upward.
+ * how many fingers are extended (0-5). The four fingers are judged by how far
+ * their tip sits from the wrist relative to their PIP joint; the thumb by 2D
+ * distance from the palm center instead, since it splays sideways rather
+ * than outward from the wrist. Both measures are plain Euclidean distances
+ * between landmarks, so the result holds regardless of how the hand is
+ * rotated or tilted toward the camera.
  */
 export function countExtendedFingers(landmarks: HandLandmark[]): number {
   if (!landmarks || landmarks.length < 21) return 0
 
+  const wrist = landmarks[WRIST]
   const fingers = [
     isThumbExtended(landmarks),
-    isFingerExtended(landmarks, INDEX_TIP, INDEX_PIP),
-    isFingerExtended(landmarks, MIDDLE_TIP, MIDDLE_PIP),
-    isFingerExtended(landmarks, RING_TIP, RING_PIP),
-    isFingerExtended(landmarks, PINKY_TIP, PINKY_PIP),
+    isFingerExtended(landmarks, wrist, INDEX_TIP, INDEX_PIP),
+    isFingerExtended(landmarks, wrist, MIDDLE_TIP, MIDDLE_PIP),
+    isFingerExtended(landmarks, wrist, RING_TIP, RING_PIP),
+    isFingerExtended(landmarks, wrist, PINKY_TIP, PINKY_PIP),
   ]
 
   return fingers.filter(Boolean).length

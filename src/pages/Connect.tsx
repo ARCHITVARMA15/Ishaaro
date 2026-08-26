@@ -66,6 +66,13 @@ export default function Connect() {
         </button>
       </nav>
 
+      <div className="flex justify-center border-b border-primary-100 bg-background px-5 py-2.5">
+        <span className="inline-flex items-center gap-2 border border-accent-600 px-3 py-1 font-mono text-xs uppercase tracking-widest text-accent-800">
+          <span className="h-1.5 w-1.5 rounded-full bg-accent-500" />
+          Product Vision — real-time translation, coming next
+        </span>
+      </div>
+
       <main className="relative flex flex-1 flex-col md:flex-row md:overflow-hidden">
         {/* Left: Deaf/Mute user */}
         <section className="relative flex flex-1 flex-col items-center justify-center gap-6 border-b border-primary-900/10 bg-white/50 p-5 pb-14 md:border-b-0 md:border-r md:p-16">
@@ -94,8 +101,8 @@ export default function Connect() {
               </div>
             </div>
             <div className="mt-3 flex items-center justify-between px-1">
-              <span className="font-mono text-xs text-primary-900/70">01. CAMERA ACTIVE</span>
-              <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-red-500" />
+              <span className="font-mono text-xs text-primary-900/70">01. CAMERA PREVIEW</span>
+              <span className="h-2.5 w-2.5 rounded-full bg-primary-300" />
             </div>
           </div>
         </section>
@@ -143,7 +150,7 @@ export default function Connect() {
 
           <div className="flex h-96 w-full max-w-sm flex-col border border-primary-900/20 bg-primary-900/5 p-5 shadow-sm backdrop-blur-md sm:p-6">
             <div className="mb-4 border-b border-primary-900/20 pb-2 font-mono text-xs uppercase tracking-widest text-primary-900/70">
-              Live Chat
+              Chat Preview
             </div>
             <div className="flex flex-1 flex-col justify-end gap-3 overflow-y-auto">
               {CHAT_MESSAGES.map((msg, i) => (
@@ -174,9 +181,9 @@ export default function Connect() {
                 <MicIcon className="h-4 w-4" />
                 Tap to Speak
               </button>
-              <span className="flex items-center gap-1.5 font-mono text-xs text-accent-800">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent-600" />
-                LISTENING
+              <span className="flex items-center gap-1.5 font-mono text-xs text-primary-900/50">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary-300" />
+                MIC PREVIEW
               </span>
             </div>
           </div>

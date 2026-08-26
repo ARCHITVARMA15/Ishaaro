@@ -16,6 +16,11 @@ export type CameraStatus =
 
 export type ModelStatus = 'loading' | 'ready' | 'error'
 
+// How many recent frames to smooth the finger count over. A single noisy
+// frame (motion blur, a finger mid-curl) shouldn't be enough to flip the
+// reported count — we take the mode of a short rolling window instead.
+const SMOOTHING_WINDOW = 5
+
 async function createHandLandmarker() {
   const vision = await FilesetResolver.forVisionTasks(WASM_BASE)
   const options = {
@@ -146,6 +151,28 @@ export function useHandTracking() {
 
     const ctx = canvas.getContext('2d')
 
+    const recentCounts: number[] = []
+    function smoothCount(raw: number | null): number | null {
+      if (raw === null) {
+        recentCounts.length = 0
+        return null
+      }
+      recentCounts.push(raw)
+      if (recentCounts.length > SMOOTHING_WINDOW) recentCounts.shift()
+
+      const tally = new Map<number, number>()
+      for (const value of recentCounts) tally.set(value, (tally.get(value) ?? 0) + 1)
+      let mode = raw
+      let modeVotes = 0
+      for (const [value, votes] of tally) {
+        if (votes > modeVotes) {
+          mode = value
+          modeVotes = votes
+        }
+      }
+      return mode
+    }
+
     function tick() {
       const landmarker = landmarkerRef.current
       if (landmarker && video!.readyState >= 2 && video!.videoWidth) {
@@ -160,10 +187,11 @@ export function useHandTracking() {
               canvasWidth: canvas!.width,
               canvasHeight: canvas!.height,
             })
-            setFingerCount(countExtendedFingers(hand))
+            setFingerCount(smoothCount(countExtendedFingers(hand)))
             setConfidence(result.handedness[0]?.[0]?.score ?? null)
           } else {
             ctx.clearRect(0, 0, canvas!.width, canvas!.height)
+            smoothCount(null)
             setFingerCount(null)
             setConfidence(null)
           }
