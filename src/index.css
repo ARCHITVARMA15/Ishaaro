@@ -51,3 +51,49 @@ h5,
 h6 {
   font-family: var(--font-heading);
 }
+
+/* Practice screen: idle camera-frame border pulse */
+@keyframes camera-frame-pulse {
+  0%,
+  100% {
+    border-color: rgb(27 75 67 / 0.45);
+    box-shadow: 0 0 0 0 rgb(27 75 67 / 0.25);
+  }
+  50% {
+    border-color: rgb(27 75 67 / 0.95);
+    box-shadow: 0 0 0 8px rgb(27 75 67 / 0);
+  }
+}
+.animate-camera-frame-pulse {
+  animation: camera-frame-pulse 2.6s ease-in-out infinite;
+}
+
+/* Practice screen: status pill content pop-in on state change */
+@keyframes pill-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-pill-pop {
+  animation: pill-pop 0.25s ease-out;
+}
+
+/* Practice screen: self-drawing checkmark on a match */
+@keyframes checkmark-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.animate-checkmark-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: checkmark-draw 0.45s 0.05s ease-out forwards;
+}

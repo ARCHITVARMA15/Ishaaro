@@ -6,6 +6,7 @@ import LandingPage from './pages/LandingPage'
 import Lessons from './pages/Lessons'
 import Parent from './pages/Parent'
 import Practice from './pages/Practice'
+import PracticeScreen from './pages/PracticeScreen'
 import Teacher from './pages/Teacher'
 
 function SiteLayout() {
@@ -32,6 +33,7 @@ function App() {
           <Route path="/connect" element={<Connect />} />
         </Route>
         <Route path="/landingpage" element={<LandingPage />} />
+        <Route path="/practicescreen" element={<PracticeScreen />} />
       </Routes>
     </BrowserRouter>
   )

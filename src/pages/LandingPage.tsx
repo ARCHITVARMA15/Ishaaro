@@ -1,77 +1,14 @@
-import { Link } from 'react-router-dom'
 import handMesh from '../assets/landingpage/hand-mesh.jpg'
 import handsPhoto from '../assets/landingpage/hands-photo.jpg'
-
-const navLinks = ['Curriculum', 'Technology', 'Philosophy', 'Archive']
+import StitchHeader from '../components/StitchHeader'
+import { ArrowIcon, SearchIcon } from '../components/icons'
 
 const footerLinks = ['Ethics', 'Privacy', 'Sign Archive', 'Instagram']
-
-function ArrowIcon({ className = 'h-4 w-4' }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M5 12h14M13 6l6 6-6 6" />
-    </svg>
-  )
-}
-
-function SearchIcon({ className = 'h-4 w-4' }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="11" cy="11" r="7" />
-      <path d="M21 21l-4.3-4.3" />
-    </svg>
-  )
-}
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background font-body text-primary-900 antialiased">
-      <header className="relative z-40 border-b border-primary-900 bg-background">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 md:px-16">
-          <Link
-            to="/landingpage"
-            className="font-heading text-lg font-bold uppercase tracking-tight text-primary-900"
-          >
-            Ishaaro
-          </Link>
-
-          <nav className="hidden items-center gap-8 md:flex">
-            {navLinks.map((label) => (
-              <a
-                key={label}
-                href="#"
-                className="font-mono text-sm tracking-wide text-primary-900/70 transition-colors hover:text-accent-600"
-              >
-                {label}
-              </a>
-            ))}
-          </nav>
-
-          <button
-            type="button"
-            className="flex items-center gap-2 bg-primary-700 px-5 py-3 font-body text-sm font-bold uppercase tracking-wide text-white transition-colors hover:bg-primary-800"
-          >
-            Start Learning
-            <ArrowIcon className="h-4 w-4" />
-          </button>
-        </div>
-      </header>
+      <StitchHeader />
 
       <main>
         {/* Hero */}
