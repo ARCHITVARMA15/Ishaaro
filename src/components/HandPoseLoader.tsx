@@ -4,7 +4,7 @@ interface Finger {
 }
 
 // A simplified, stylized hand skeleton (wrist + 5 fingers), in the same
-// bones-and-joints language as the live MediaPipe overlay on /practicescreen,
+// bones-and-joints language as the live MediaPipe overlay on /practice,
 // just hand-drawn as a fixed pose instead of tracked from a real hand.
 const FINGERS: Finger[] = [
   {

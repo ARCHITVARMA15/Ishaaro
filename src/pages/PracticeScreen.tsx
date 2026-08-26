@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import HandPoseLoader from '../components/HandPoseLoader'
 import StitchHeader from '../components/StitchHeader'
 import {
-  ArchiveIcon,
   CameraOffIcon,
   CoachIcon,
   HandIcon,
   SchoolIcon,
+  SyncIcon,
 } from '../components/icons'
 import { useHandTracking } from '../hooks/useHandTracking'
 import { useSignStatus, type SignStatus } from '../hooks/useSignStatus'
@@ -290,24 +291,24 @@ export default function PracticeScreen() {
 
       {/* Mobile bottom nav */}
       <nav className="fixed bottom-0 left-0 z-50 flex w-full justify-around border-t border-primary-100 bg-background py-3 md:hidden">
-        <a
-          href="#"
+        <Link
+          to="/lessons"
           className="flex flex-col items-center gap-1 text-primary-900/70 hover:text-primary-700"
         >
           <SchoolIcon className="h-5 w-5" />
-          <span className="font-mono text-[10px]">{practice.mobileNav.curriculum}</span>
-        </a>
+          <span className="font-mono text-[10px]">{practice.mobileNav.lessons}</span>
+        </Link>
         <span className="-mt-px flex flex-col items-center gap-1 border-t-2 border-accent-500 pt-1 font-semibold text-primary-700">
           <HandIcon className="h-5 w-5" />
           <span className="font-mono text-[10px]">{practice.mobileNav.practice}</span>
         </span>
-        <a
-          href="#"
+        <Link
+          to="/connect"
           className="flex flex-col items-center gap-1 text-primary-900/70 hover:text-primary-700"
         >
-          <ArchiveIcon className="h-5 w-5" />
-          <span className="font-mono text-[10px]">{practice.mobileNav.archive}</span>
-        </a>
+          <SyncIcon className="h-5 w-5" />
+          <span className="font-mono text-[10px]">{practice.mobileNav.connect}</span>
+        </Link>
       </nav>
     </div>
   )

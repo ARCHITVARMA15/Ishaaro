@@ -1,7 +1,7 @@
 /**
- * All user-facing text for the Landing (/landingpage), Lessons (/lessons),
- * and Practice (/practicescreen) pages, plus the shared StitchHeader /
- * StitchFooter chrome that renders on them — in English and Gujarati.
+ * All user-facing text for the Landing (/), Lessons (/lessons), and
+ * Practice (/practice) pages, plus the shared StitchHeader / StitchFooter
+ * chrome that renders on them — in English and Gujarati.
  *
  * Scope decisions (documented here so they're visible, not silent):
  * - Numeric chrome (card indices like "01.", the "5 / 5" counter, "95%",
@@ -29,10 +29,11 @@
 
 export interface Strings {
   nav: {
-    curriculum: string
-    technology: string
-    philosophy: string
-    archive: string
+    practice: string
+    lessons: string
+    teacher: string
+    parent: string
+    connect: string
     startLearning: string
   }
   footer: {
@@ -115,19 +116,20 @@ export interface Strings {
       noHandDetected: string
     }
     mobileNav: {
-      curriculum: string
+      lessons: string
       practice: string
-      archive: string
+      connect: string
     }
   }
 }
 
 const en: Strings = {
   nav: {
-    curriculum: 'Curriculum',
-    technology: 'Technology',
-    philosophy: 'Philosophy',
-    archive: 'Archive',
+    practice: 'Practice',
+    lessons: 'Lessons',
+    teacher: 'Teacher',
+    parent: 'Parent',
+    connect: 'Connect',
     startLearning: 'Start Learning',
   },
   footer: {
@@ -310,29 +312,27 @@ const en: Strings = {
       noHandDetected: 'NO HAND DETECTED',
     },
     mobileNav: {
-      curriculum: 'Curriculum',
+      lessons: 'Lessons',
       practice: 'Practice',
-      archive: 'Archive',
+      connect: 'Connect',
     },
   },
 }
 
 const gu: Strings = {
   nav: {
-    curriculum: 'અભ્યાસક્રમ',
-    // [REVIEW] "ટેકનોલોજી" is the everyday transliteration nearly everyone
-    // actually says; kept over a "purer" Sanskrit-derived word since this is
-    // a nav label, not literary text.
-    technology: 'ટેકનોલોજી',
-    // [REVIEW] Chose the common loanword "ફિલોસોફી" over formal
-    // "તત્વજ્ઞાન" — the latter is more literary than a nav label needs, but
-    // worth a native speaker's gut-check since it's a judgment call either
-    // way.
-    philosophy: 'ફિલોસોફી',
-    // [REVIEW] Chose "સંગ્રહ" (collection/store) over the loanword
-    // "આર્કાઇવ" for warmth toward a family audience — flagging since
-    // "આર્કાઇવ" is also completely natural and some may expect it.
-    archive: 'સંગ્રહ',
+    practice: 'અભ્યાસ',
+    // [REVIEW] "પાઠ" (lesson) is the everyday word for a single lesson —
+    // used here for the "Lessons" section link.
+    lessons: 'પાઠ',
+    teacher: 'શિક્ષક',
+    // "વાલી" (guardian) is the standard term Indian schools/apps use to
+    // address a student's parent — more natural here than a literal
+    // "માતાપિતા" (mother-father).
+    parent: 'વાલી',
+    // [REVIEW] "સંપર્ક" (contact/connection) for the Connect page — judgment
+    // call between this and "જોડાણ" (link/connection); both are natural.
+    connect: 'સંપર્ક',
     startLearning: 'શીખવાનું શરૂ કરો',
   },
   footer: {
@@ -568,9 +568,9 @@ const gu: Strings = {
       noHandDetected: 'હાથ મળ્યો નથી',
     },
     mobileNav: {
-      curriculum: 'અભ્યાસક્રમ',
+      lessons: 'પાઠ',
       practice: 'અભ્યાસ',
-      archive: 'સંગ્રહ',
+      connect: 'સંપર્ક',
     },
   },
 }

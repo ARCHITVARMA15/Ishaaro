@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { useLanguage } from '../i18n/LanguageContext'
 import { ArrowIcon } from './icons'
 
@@ -96,31 +96,36 @@ interface StitchHeaderProps {
 export default function StitchHeader({ showLanguageToast = false }: StitchHeaderProps) {
   const { strings } = useLanguage()
   const navLinks = [
-    strings.nav.curriculum,
-    strings.nav.technology,
-    strings.nav.philosophy,
-    strings.nav.archive,
+    { to: '/practice', label: strings.nav.practice },
+    { to: '/lessons', label: strings.nav.lessons },
+    { to: '/teacher', label: strings.nav.teacher },
+    { to: '/parent', label: strings.nav.parent },
+    { to: '/connect', label: strings.nav.connect },
   ]
+
+  const linkClasses = ({ isActive }: { isActive: boolean }) =>
+    [
+      'whitespace-nowrap font-mono text-sm tracking-wide transition-colors',
+      isActive
+        ? 'border-b-2 border-accent-500 pb-1 font-bold text-primary-900'
+        : 'text-primary-900/70 hover:text-accent-800',
+    ].join(' ')
 
   return (
     <header className="relative z-40 border-b border-primary-900 bg-background">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-5 py-4 md:gap-3 md:px-6 lg:gap-4 lg:px-16">
         <Link
-          to="/landingpage"
+          to="/"
           className="shrink-0 font-heading text-lg font-bold uppercase tracking-tight text-primary-900"
         >
           Ishaaro
         </Link>
 
         <nav className="hidden items-center gap-3 md:flex lg:gap-8">
-          {navLinks.map((label) => (
-            <a
-              key={label}
-              href="#"
-              className="whitespace-nowrap font-mono text-sm tracking-wide text-primary-900/70 transition-colors hover:text-accent-800"
-            >
-              {label}
-            </a>
+          {navLinks.map((link) => (
+            <NavLink key={link.to} to={link.to} className={linkClasses}>
+              {link.label}
+            </NavLink>
           ))}
         </nav>
 
@@ -130,13 +135,13 @@ export default function StitchHeader({ showLanguageToast = false }: StitchHeader
             {showLanguageToast && <LanguageToast />}
           </div>
 
-          <button
-            type="button"
+          <Link
+            to="/practice"
             className="flex shrink-0 items-center gap-2 whitespace-nowrap bg-primary-700 px-4 py-3 font-body text-sm font-bold uppercase tracking-wide text-white transition-colors hover:bg-primary-800 md:px-5"
           >
             {strings.nav.startLearning}
             <ArrowIcon className="h-4 w-4" />
-          </button>
+          </Link>
         </div>
       </div>
     </header>

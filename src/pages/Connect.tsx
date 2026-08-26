@@ -1,7 +1,13 @@
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { MicIcon, SyncIcon, VideoIcon } from '../components/icons'
 
-const NAV_LINKS = ['Curriculum', 'Technology', 'Philosophy', 'Archive']
+const NAV_LINKS = [
+  { to: '/practice', label: 'Practice' },
+  { to: '/lessons', label: 'Lessons' },
+  { to: '/teacher', label: 'Teacher' },
+  { to: '/parent', label: 'Parent' },
+  { to: '/connect', label: 'Connect' },
+]
 
 interface Particle {
   top: string
@@ -42,28 +48,30 @@ export default function Connect() {
         </Link>
 
         <div className="hidden items-center gap-5 md:flex lg:gap-8">
-          {NAV_LINKS.map((label) => (
-            <a
-              key={label}
-              href="#"
-              className={[
-                'whitespace-nowrap font-mono text-sm tracking-wide transition-colors',
-                label === 'Technology'
-                  ? 'border-b-2 border-accent-500 pb-1 font-bold text-accent-400'
-                  : 'text-primary-100/70 hover:text-white',
-              ].join(' ')}
+          {NAV_LINKS.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              className={({ isActive }) =>
+                [
+                  'whitespace-nowrap font-mono text-sm tracking-wide transition-colors',
+                  isActive
+                    ? 'border-b-2 border-accent-500 pb-1 font-bold text-accent-400'
+                    : 'text-primary-100/70 hover:text-white',
+                ].join(' ')
+              }
             >
-              {label}
-            </a>
+              {link.label}
+            </NavLink>
           ))}
         </div>
 
-        <button
-          type="button"
+        <Link
+          to="/practice"
           className="shrink-0 whitespace-nowrap bg-accent-500 px-4 py-2.5 font-mono text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-accent-600 md:px-5"
         >
           Start Learning
-        </button>
+        </Link>
       </nav>
 
       <div className="flex justify-center border-b border-primary-100 bg-background px-5 py-2.5">
