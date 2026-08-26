@@ -52,6 +52,28 @@ h6 {
   font-family: var(--font-heading);
 }
 
+/* When Gujarati is active on a translated page, its root carries lang="gu".
+   Sora / Manrope / JetBrains Mono / Instrument Serif have no Gujarati
+   glyphs, so without this the browser silently substitutes an arbitrary
+   system font with unpredictable vertical metrics — which is what caused
+   tall matras to collide with the line above. Forcing Noto Sans Gujarati
+   here keeps rendering intentional and consistent. Written outside any
+   @layer so it wins over Tailwind's layered utility classes regardless of
+   selector specificity. */
+[lang='gu'] .font-heading,
+[lang='gu'] .font-body,
+[lang='gu'] .font-mono,
+[lang='gu'] .font-script {
+  font-family: var(--font-gujarati);
+}
+
+/* Gujarati matras need more vertical breathing room than the tight leading
+   tuned for Latin display type. */
+[lang='gu'] .leading-\[1\.05\],
+[lang='gu'] .leading-\[0\.98\] {
+  line-height: 1.35 !important;
+}
+
 /* Practice screen: idle camera-frame border pulse */
 @keyframes camera-frame-pulse {
   0%,

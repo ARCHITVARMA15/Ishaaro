@@ -101,22 +101,17 @@ export function countExtendedFingers(landmarks: HandLandmark[]): number {
 
 export interface NumeralTarget {
   value: number
+  // The target sign glyph itself — actual content being taught, not UI
+  // chrome, so it doesn't change with the interface language. The display
+  // label (e.g. "Five (5)" / "પાંચ (5)") lives in src/i18n/strings.ts
+  // instead, keyed by `value`, alongside the corrective tips.
   gujarati: string
-  english: string
 }
 
 export const NUMERAL_TARGETS: NumeralTarget[] = [
-  { value: 1, gujarati: '૧', english: 'One (1)' },
-  { value: 2, gujarati: '૨', english: 'Two (2)' },
-  { value: 3, gujarati: '૩', english: 'Three (3)' },
-  { value: 4, gujarati: '૪', english: 'Four (4)' },
-  { value: 5, gujarati: '૫', english: 'Five (5)' },
+  { value: 1, gujarati: '૧' },
+  { value: 2, gujarati: '૨' },
+  { value: 3, gujarati: '૩' },
+  { value: 4, gujarati: '૪' },
+  { value: 5, gujarati: '૫' },
 ]
-
-export const CORRECTIVE_TIPS: Record<number, string> = {
-  1: 'Try tucking your other fingers in — only the index finger should point up.',
-  2: 'Spread your index and middle fingers apart for a clearer V shape.',
-  3: 'Keep your thumb, index, and middle fingers extended and the rest curled in.',
-  4: 'Extend all four fingers and fold your thumb across your palm.',
-  5: 'Try spreading your fingers further apart, palm facing forward.',
-}

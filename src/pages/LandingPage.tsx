@@ -3,11 +3,15 @@ import handsPhoto from '../assets/landingpage/hands-photo.jpg'
 import StitchFooter from '../components/StitchFooter'
 import StitchHeader from '../components/StitchHeader'
 import { ArrowIcon, SearchIcon } from '../components/icons'
+import { useLanguage } from '../i18n/LanguageContext'
 
 export default function LandingPage() {
+  const { lang, strings } = useLanguage()
+  const { landing } = strings
+
   return (
-    <div className="min-h-screen bg-background font-body text-primary-900 antialiased">
-      <StitchHeader />
+    <div lang={lang} className="min-h-screen bg-background font-body text-primary-900 antialiased">
+      <StitchHeader showLanguageToast />
 
       <main>
         {/* Hero */}
@@ -15,11 +19,11 @@ export default function LandingPage() {
           <div className="flex flex-col gap-12 md:flex-row md:gap-8">
             <div className="w-full md:w-[58%]">
               <h1 className="overflow-visible font-heading text-5xl font-medium leading-[1.05] tracking-tight text-primary-900 sm:text-6xl md:text-7xl lg:text-[88px] lg:leading-[0.98]">
-                Bridging the gap between
+                {landing.heroLine1}
                 <br />
                 <span className="mt-1 flex flex-wrap items-baseline gap-x-4 gap-y-3 pb-2">
                   <span className="relative inline-block">
-                    barriers
+                    {landing.barriers}
                     <svg
                       className="pointer-events-none absolute left-0 top-1/2 h-8 w-full -translate-y-1/2"
                       viewBox="0 0 100 20"
@@ -38,15 +42,13 @@ export default function LandingPage() {
                     className="inline-block -rotate-3 pr-2 font-script text-[0.5em] italic leading-none text-accent-700"
                     style={{ fontStyle: 'italic' }}
                   >
-                    possibilities.
+                    {landing.possibilities}
                   </span>
                 </span>
               </h1>
 
               <p className="mt-8 max-w-xl text-lg leading-relaxed text-primary-900/70 md:mt-10">
-                Master manual communication through our rigorous, AI-assisted
-                curriculum. A sophisticated approach to linguistic kinetic
-                energy.
+                {landing.subheadline}
               </p>
 
               <div className="relative mt-10 inline-block md:mt-14">
@@ -54,7 +56,7 @@ export default function LandingPage() {
                   type="button"
                   className="relative z-10 bg-primary-700 px-8 py-4 font-body text-sm font-bold uppercase tracking-wide text-white transition-colors hover:bg-primary-800"
                 >
-                  Start Learning
+                  {strings.nav.startLearning}
                 </button>
                 <svg
                   className="pointer-events-none absolute -inset-4 z-20 h-[calc(100%+2rem)] w-[calc(100%+2rem)]"
@@ -102,10 +104,10 @@ export default function LandingPage() {
                 <div className="absolute -bottom-8 -left-4 z-30 flex flex-col gap-2 border border-accent-600 bg-primary-700 p-4 text-white shadow-[8px_8px_0px_#1b4b43] sm:-bottom-10 sm:-left-10 md:-left-16">
                   <div className="flex items-center gap-2 font-mono text-xs tracking-wide sm:text-sm">
                     <span className="h-2 w-2 animate-pulse rounded-full bg-accent-500" />
-                    4,287 ISL sign videos
+                    {landing.statVideos}
                   </div>
                   <div className="border-t border-white/20 pt-2 font-mono text-xs tracking-wide text-white/80 sm:text-sm">
-                    95% target accuracy
+                    {landing.statAccuracy}
                   </div>
                 </div>
               </div>
@@ -117,7 +119,7 @@ export default function LandingPage() {
         <section className="border-t border-primary-900 bg-primary-50 px-5 py-16 md:px-16 md:py-24">
           <div className="mx-auto max-w-7xl">
             <h2 className="mb-10 inline-block border-b-2 border-accent-500 pb-3 font-heading text-3xl font-semibold text-primary-900 sm:text-4xl md:mb-12">
-              Curriculum Methodology
+              {landing.methodologyTitle}
             </h2>
 
             <div className="grid grid-cols-1 gap-8 md:grid-cols-12">
@@ -128,13 +130,10 @@ export default function LandingPage() {
                 </span>
                 <div>
                   <h3 className="mb-4 font-heading text-xl font-semibold">
-                    Real-time AI Feedback
+                    {landing.card1Title}
                   </h3>
                   <p className="max-w-md text-sm leading-relaxed text-white/85">
-                    Our proprietary kinetic analysis engine compares your
-                    hand poses against ISLRTC-verified sign references in
-                    real time, entirely on-device, providing instant
-                    structural corrections.
+                    {landing.card1Body}
                   </p>
                 </div>
                 <div className="relative mt-8 h-48 w-full overflow-hidden border border-white/30 bg-white/10">
@@ -165,17 +164,16 @@ export default function LandingPage() {
                     02.
                   </span>
                   <h3 className="mb-2 font-heading text-xl font-semibold text-primary-900">
-                    ISL Curriculum
+                    {landing.card2Title}
                   </h3>
                   <p className="text-sm leading-relaxed text-primary-900/70">
-                    Structured academic progression from foundational
-                    linguistics to advanced expressive rhetoric.
+                    {landing.card2Body}
                   </p>
                   <a
                     href="#"
                     className="mt-6 inline-flex items-center gap-2 border-b border-accent-600 pb-1 font-mono text-xs text-primary-900 transition-colors hover:text-accent-800"
                   >
-                    Explore Syllabus
+                    {landing.card2Link}
                     <ArrowIcon className="h-3.5 w-3.5" />
                   </a>
                 </div>
@@ -185,18 +183,16 @@ export default function LandingPage() {
                     03.
                   </span>
                   <h3 className="mb-2 font-heading text-xl font-semibold text-primary-900">
-                    Sign Archive
+                    {landing.card3Title}
                   </h3>
                   <p className="text-sm leading-relaxed text-primary-900/70">
-                    A growing, teacher-verified library of ISL signs and
-                    regional variants, preserving historical and
-                    contemporary manual expressions.
+                    {landing.card3Body}
                   </p>
                   <a
                     href="#"
                     className="mt-6 inline-flex items-center gap-2 border-b border-accent-600 pb-1 font-mono text-xs text-primary-900 transition-colors hover:text-accent-800"
                   >
-                    Search Archive
+                    {landing.card3Link}
                     <SearchIcon className="h-3.5 w-3.5" />
                   </a>
                 </div>

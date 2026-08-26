@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import StitchFooter from '../components/StitchFooter'
 import StitchHeader from '../components/StitchHeader'
+import { useLanguage } from '../i18n/LanguageContext'
+import type { Strings } from '../i18n/strings'
 import { LESSON_TABS, type LessonCard } from '../lib/lessons/data'
 
 const ROTATIONS = [-2, 3, -1.5, 2.5, -3, 1.5, -2.5, 2, -1, 3.5]
@@ -15,27 +17,38 @@ function CheckIcon({ className = 'h-5 w-5' }: { className?: string }) {
   )
 }
 
-function Flashcard({ card, position }: { card: LessonCard; position: number }) {
+function Flashcard({
+  card,
+  position,
+  strings,
+}: {
+  card: LessonCard
+  position: number
+  strings: Strings
+}) {
   const rotation = ROTATIONS[position % ROTATIONS.length]
   const offset = OFFSETS[position % OFFSETS.length]
   const style = { transform: `rotate(${rotation}deg) translateY(${offset}px)` }
 
   if (card.type === 'note') {
+    const text = strings.lessons.notes[card.id]
     return (
       <div
         className="relative flex h-80 w-56 shrink-0 flex-col justify-between border border-primary-900 bg-primary-700 p-6 text-white shadow-[4px_4px_0px_#1b4b43]"
         style={style}
       >
         <span className="font-mono text-xs uppercase tracking-widest text-primary-200">
-          Note.
+          {strings.lessons.noteLabel}
         </span>
-        <p className="font-heading text-lg leading-snug">{card.text}</p>
+        <p className="font-heading text-lg leading-snug">{text}</p>
         <svg className="h-3 w-full text-accent-500" viewBox="0 0 100 10" preserveAspectRatio="none" fill="none">
           <path d="M0,5 Q25,0 50,5 T100,5" stroke="currentColor" strokeWidth={2} />
         </svg>
       </div>
     )
   }
+
+  const content = strings.lessons.cards[card.id]
 
   return (
     <div
@@ -58,17 +71,17 @@ function Flashcard({ card, position }: { card: LessonCard; position: number }) {
           </span>
         ) : (
           <span className="font-heading text-xl font-semibold leading-snug text-primary-700">
-            {card.label}
+            {content.label}
           </span>
         )}
       </div>
 
       <div className="relative text-center">
         {card.glyph ? (
-          <span className="font-heading text-base text-primary-900">{card.label}</span>
+          <span className="font-heading text-base text-primary-900">{content.label}</span>
         ) : (
           <span className="font-mono text-xs leading-snug text-primary-900/70">
-            {card.sublabel}
+            {content.sublabel}
           </span>
         )}
       </div>
@@ -77,11 +90,13 @@ function Flashcard({ card, position }: { card: LessonCard; position: number }) {
 }
 
 export default function Lessons() {
+  const { lang, strings } = useLanguage()
   const [activeTab, setActiveTab] = useState(0)
   const tab = LESSON_TABS[activeTab]
+  const tabStrings = strings.lessons.tabs[tab.key]
 
   return (
-    <div className="min-h-screen bg-primary-50 font-body text-primary-900 antialiased">
+    <div lang={lang} className="min-h-screen bg-primary-50 font-body text-primary-900 antialiased">
       <StitchHeader />
 
       <main className="mx-auto max-w-7xl px-5 py-12 md:px-16">
@@ -95,15 +110,15 @@ export default function Lessons() {
             />
           </svg>
           <h1 className="mb-4 font-heading text-4xl font-medium leading-tight text-primary-900 sm:text-5xl">
-            Mastering
+            {strings.lessons.heading1}
             <br />
-            the Hand
+            {strings.lessons.heading2}
           </h1>
           <p className="max-w-2xl text-primary-900/70">
             <span className="font-mono text-xs uppercase tracking-widest text-primary-700">
-              {tab.moduleTitle}.{' '}
+              {tabStrings.moduleTitle}.{' '}
             </span>
-            {tab.intro}
+            {tabStrings.intro}
           </p>
         </section>
 
@@ -121,14 +136,14 @@ export default function Lessons() {
                   : 'border border-b-0 border-primary-100 bg-white text-primary-900/70 hover:bg-primary-100/60',
               ].join(' ')}
             >
-              {t.label}
+              {strings.lessons.tabs[t.key].label}
             </button>
           ))}
         </div>
 
         <div className="flex flex-wrap justify-center gap-x-10 gap-y-14 pb-8 md:justify-start">
           {tab.cards.map((card, i) => (
-            <Flashcard key={`${tab.key}-${i}`} card={card} position={i} />
+            <Flashcard key={`${tab.key}-${i}`} card={card} position={i} strings={strings} />
           ))}
         </div>
       </main>

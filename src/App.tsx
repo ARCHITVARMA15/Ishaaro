@@ -4,6 +4,7 @@ import { BrowserRouter, Outlet, Route, Routes, useLocation } from 'react-router-
 import HandPoseLoader from './components/HandPoseLoader'
 import Nav from './components/Nav'
 import PageTransition from './components/PageTransition'
+import { LanguageProvider } from './i18n/LanguageContext'
 
 const Landing = lazy(() => import('./pages/Landing'))
 const Practice = lazy(() => import('./pages/Practice'))
@@ -113,9 +114,11 @@ function AnimatedRoutes() {
 function App() {
   return (
     <BrowserRouter>
-      <Suspense fallback={<LoadingScreen />}>
-        <AnimatedRoutes />
-      </Suspense>
+      <LanguageProvider>
+        <Suspense fallback={<LoadingScreen />}>
+          <AnimatedRoutes />
+        </Suspense>
+      </LanguageProvider>
     </BrowserRouter>
   )
 }

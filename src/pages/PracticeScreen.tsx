@@ -10,30 +10,26 @@ import {
 } from '../components/icons'
 import { useHandTracking } from '../hooks/useHandTracking'
 import { useSignStatus, type SignStatus } from '../hooks/useSignStatus'
-import { CORRECTIVE_TIPS, NUMERAL_TARGETS } from '../lib/practice/fingerCount'
+import { useLanguage } from '../i18n/LanguageContext'
+import type { Strings } from '../i18n/strings'
+import { NUMERAL_TARGETS } from '../lib/practice/fingerCount'
 
-function getCoachMessage(status: SignStatus, targetValue: number): string {
+function getCoachMessage(status: SignStatus, targetValue: number, strings: Strings): string {
+  const { coach, correctiveTips } = strings.practice
   switch (status) {
     case 'checking':
-      return 'Hold steady — I’m reading your gesture.'
+      return coach.checking
     case 'match':
-      return 'Great! That’s a clean, well-formed sign.'
+      return coach.match
     case 'mismatch':
-      return CORRECTIVE_TIPS[targetValue] ?? 'Try adjusting your hand and hold it steady in the frame.'
+      return correctiveTips[targetValue] ?? coach.mismatchFallback
     case 'idle':
     default:
-      return 'Position your hand within the frame. SignCoach will analyze your gesture in real-time.'
+      return coach.idle
   }
 }
 
-const STATUS_LABEL: Record<SignStatus, string> = {
-  idle: 'Show me a sign',
-  checking: 'Checking...',
-  mismatch: 'Not sure, try again',
-  match: 'Sign Recognized',
-}
-
-function StatusPill({ status }: { status: SignStatus }) {
+function StatusPill({ status, strings }: { status: SignStatus; strings: Strings }) {
   const [matchKey, setMatchKey] = useState(0)
 
   useEffect(() => {
@@ -72,13 +68,15 @@ function StatusPill({ status }: { status: SignStatus }) {
         </svg>
       )}
       <span key={status} className="animate-pill-pop whitespace-nowrap">
-        {STATUS_LABEL[status]}
+        {strings.practice.status[status]}
       </span>
     </div>
   )
 }
 
 export default function PracticeScreen() {
+  const { lang, strings } = useLanguage()
+  const { practice } = strings
   const [targetIndex, setTargetIndex] = useState(4)
   const {
     videoRef,
@@ -93,7 +91,7 @@ export default function PracticeScreen() {
 
   const target = NUMERAL_TARGETS[targetIndex]
   const status = useSignStatus(fingerCount, target.value)
-  const coachMessage = getCoachMessage(status, target.value)
+  const coachMessage = getCoachMessage(status, target.value, strings)
 
   const goPrev = () =>
     setTargetIndex((i) => (i - 1 + NUMERAL_TARGETS.length) % NUMERAL_TARGETS.length)
@@ -103,7 +101,7 @@ export default function PracticeScreen() {
   const isDenied = cameraStatus === 'denied' || cameraStatus === 'unsupported'
 
   return (
-    <div className="min-h-screen bg-background pb-20 font-body text-primary-900 antialiased md:pb-0">
+    <div lang={lang} className="min-h-screen bg-background pb-20 font-body text-primary-900 antialiased md:pb-0">
       <StitchHeader />
 
       <main className="mx-auto flex w-full max-w-7xl flex-col gap-8 p-5 md:flex-row md:gap-10 md:p-16">
@@ -119,20 +117,17 @@ export default function PracticeScreen() {
               />
             </svg>
             <h1 className="font-heading text-4xl font-medium leading-tight text-primary-900 sm:text-5xl">
-              Practice
+              {practice.heading1}
               <br />
-              Numerals
+              {practice.heading2}
             </h1>
-            <p className="max-w-sm text-primary-900/70">
-              Position your hand within the frame. SignCoach will analyze your
-              gesture in real-time.
-            </p>
+            <p className="max-w-sm text-primary-900/70">{practice.subheadline}</p>
           </div>
 
           {/* Target Sign card */}
           <div className="relative border border-primary-900 bg-white p-6 shadow-[4px_4px_0px_#1b4b43]">
             <span className="mb-2 block font-mono text-xs uppercase tracking-widest text-primary-900">
-              Target Sign
+              {practice.targetSignLabel}
             </span>
             <div className="flex items-center justify-between gap-4">
               <span className="font-gujarati text-6xl leading-none text-primary-700 sm:text-7xl">
@@ -140,10 +135,10 @@ export default function PracticeScreen() {
               </span>
               <div className="text-right">
                 <span className="block font-mono text-xs text-primary-900/70">
-                  Numeral
+                  {practice.numeralLabel}
                 </span>
                 <span className="font-heading text-xl font-semibold text-primary-900">
-                  {target.english}
+                  {practice.numerals[target.value]}
                 </span>
               </div>
             </div>
@@ -154,7 +149,7 @@ export default function PracticeScreen() {
                 onClick={goPrev}
                 className="whitespace-nowrap font-mono text-xs uppercase tracking-wide text-primary-700 transition-colors hover:text-accent-800"
               >
-                &larr; Prev
+                &larr; {practice.prev}
               </button>
               <span className="whitespace-nowrap font-mono text-xs text-primary-900/70">
                 {targetIndex + 1} / {NUMERAL_TARGETS.length}
@@ -164,7 +159,7 @@ export default function PracticeScreen() {
                 onClick={goNext}
                 className="whitespace-nowrap font-mono text-xs uppercase tracking-wide text-primary-700 transition-colors hover:text-accent-800"
               >
-                Skip &rarr;
+                {practice.skip} &rarr;
               </button>
             </div>
           </div>
@@ -176,7 +171,7 @@ export default function PracticeScreen() {
             </div>
             <div>
               <span className="mb-1 block font-mono text-xs uppercase tracking-widest text-primary-200">
-                SignCoach
+                {practice.signCoachLabel}
               </span>
               <p
                 key={coachMessage}
@@ -220,14 +215,12 @@ export default function PracticeScreen() {
                 dotColor="#ff8c5a"
                 label={
                   modelStatus === 'loading'
-                    ? 'Loading hand tracking model'
-                    : 'Requesting camera access'
+                    ? practice.cameraLoadingAria
+                    : practice.cameraRequestingAria
                 }
               />
               <p className="font-mono text-xs uppercase tracking-widest text-white/80">
-                {modelStatus === 'loading'
-                  ? 'Loading hand tracking model...'
-                  : 'Requesting camera access...'}
+                {modelStatus === 'loading' ? practice.cameraLoading : practice.cameraRequesting}
               </p>
             </div>
           )}
@@ -236,13 +229,11 @@ export default function PracticeScreen() {
             <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-4 bg-primary-900 px-8 text-center text-white">
               <CameraOffIcon className="h-10 w-10 text-accent-400" />
               <div>
-                <p className="font-heading text-lg font-semibold">
-                  Camera access needed
-                </p>
+                <p className="font-heading text-lg font-semibold">{practice.cameraDeniedTitle}</p>
                 <p className="mt-2 max-w-xs text-sm text-white/70">
                   {cameraStatus === 'unsupported'
-                    ? "Your browser doesn't support camera access. Try a different browser to use live practice."
-                    : 'SignCoach needs your camera to see your hand and check your sign. Video is processed locally in your browser and never uploaded.'}
+                    ? practice.cameraDeniedBodyUnsupported
+                    : practice.cameraDeniedBodyDenied}
                 </p>
               </div>
               {cameraStatus !== 'unsupported' && (
@@ -251,7 +242,7 @@ export default function PracticeScreen() {
                   onClick={requestCamera}
                   className="bg-accent-500 px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-accent-600"
                 >
-                  Enable Camera
+                  {practice.enableCamera}
                 </button>
               )}
             </div>
@@ -262,17 +253,17 @@ export default function PracticeScreen() {
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-2 border border-white/30 bg-primary-900/80 px-3 py-1.5 font-mono text-xs text-white backdrop-blur-sm">
                   <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" />
-                  REC
+                  {practice.hud.rec}
                 </div>
                 <div className="flex flex-col items-end gap-0.5 border border-white/30 bg-primary-900/80 px-3 py-1.5 font-mono text-xs text-white backdrop-blur-sm">
                   <span>
-                    CONFIDENCE:{' '}
+                    {practice.hud.confidence}{' '}
                     {confidence !== null ? `${Math.round(confidence * 100)}%` : '--'}
                   </span>
                   <span
                     className={fingerCount !== null ? 'text-accent-400' : 'text-white/50'}
                   >
-                    {fingerCount !== null ? 'TRACKING ACTIVE' : 'NO HAND DETECTED'}
+                    {fingerCount !== null ? practice.hud.trackingActive : practice.hud.noHandDetected}
                   </span>
                 </div>
               </div>
@@ -290,7 +281,7 @@ export default function PracticeScreen() {
               </div>
 
               <div className="flex justify-center">
-                <StatusPill status={status} />
+                <StatusPill status={status} strings={strings} />
               </div>
             </div>
           )}
@@ -304,18 +295,18 @@ export default function PracticeScreen() {
           className="flex flex-col items-center gap-1 text-primary-900/70 hover:text-primary-700"
         >
           <SchoolIcon className="h-5 w-5" />
-          <span className="font-mono text-[10px]">Curriculum</span>
+          <span className="font-mono text-[10px]">{practice.mobileNav.curriculum}</span>
         </a>
         <span className="-mt-px flex flex-col items-center gap-1 border-t-2 border-accent-500 pt-1 font-semibold text-primary-700">
           <HandIcon className="h-5 w-5" />
-          <span className="font-mono text-[10px]">Practice</span>
+          <span className="font-mono text-[10px]">{practice.mobileNav.practice}</span>
         </span>
         <a
           href="#"
           className="flex flex-col items-center gap-1 text-primary-900/70 hover:text-primary-700"
         >
           <ArchiveIcon className="h-5 w-5" />
-          <span className="font-mono text-[10px]">Archive</span>
+          <span className="font-mono text-[10px]">{practice.mobileNav.archive}</span>
         </a>
       </nav>
     </div>
