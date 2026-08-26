@@ -24,12 +24,14 @@ dist-ssr
 *.sw?
 
 
-# Design reference exports (not app source)
-landingpage/
-practicescreen/
-lessons/
-parent/
-teacher/
-connect/
+# Design reference exports (not app source) — anchored to repo root with a
+# leading slash so these DON'T also match same-named directories elsewhere,
+# e.g. src/lib/lessons/ or src/assets/landingpage/, which are real source.
+/landingpage/
+/practicescreen/
+/lessons/
+/parent/
+/teacher/
+/connect/
 
 
